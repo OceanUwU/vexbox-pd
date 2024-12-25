@@ -17,6 +17,7 @@ import "pyramid"
 pd.getSystemMenu():addMenuItem(tr("menuoption.restart"), function() print("new game") end)
 
 function main()
+    loadBoxImages()
     lifetime = 0
     pyramid = Pyramid()
 end
@@ -31,3 +32,10 @@ function pd.update()
     gfx.sprite.update()
     pd.timer.updateTimers()
 end
+
+playdate.AButtonDown = function() pyramid.cursor:onPressA() end
+playdate.BButtonDown = function() pyramid.cursor:onPressB() end
+playdate.leftButtonDown = function() pyramid.cursor:onPressLeft() end
+playdate.rightButtonDown = function() pyramid.cursor:onPressRight() end
+playdate.upButtonDown = function() pyramid.cursor:onPressUp() end
+playdate.downButtonDown = function() pyramid.cursor:onPressDown() end
