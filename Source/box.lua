@@ -1,15 +1,10 @@
 class("Box").extends()
 
-local boxImages = { unknown = loadImg("box/icon-unknown") }
+local unknownImg<const> = loadImg("box/icon-unknown")
+local revealedOverlay<const> = loadImg("box/revealed")
 local borderImages<const> = { closed = loadImg("box/border/closed"), revealed = loadImg("box/border/revealed"), open = loadImg("box/border/open") }
 local borderSize<const> = 2
-local emptyImage<const> = gfx.image.new(22, 22)
 
-function loadBoxImages()
-    for _, type in ipairs(consts.boxTypes) do
-        boxImages[type] = loadImg("box/icon/" .. type)
-    end
-end
 
 function Box:init(row, col)
     self.row = row
@@ -17,15 +12,15 @@ function Box:init(row, col)
     self.type = ""
     self.sprite = gfx.sprite.new()
     self.sprite:add()
-    self:reset("")
+    self:reset(nil)
 end
 
 function Box:reset(newType)
     self.type = newType
-    self.revealed = false
+    self.revealed = math.random() > 0.5
     self.opened = false
     self.destroyed = false
-    self:redraw()
+    if newType ~= nil then self:redraw() end
 end
 
 function Box:redraw()
@@ -34,13 +29,14 @@ function Box:redraw()
 
     if not self.destroyed then
         local border
-        if opened then border = borderImages.open
-        elseif revealed then border = borderImages.revealed
+        if self.opened then border = borderImages.open
+        elseif self.revealed then border = borderImages.revealed
         else border = borderImages.closed end
         border:draw(0, 0)
         
-        local icon = boxImages[revealed and self.type or "unknown"]
+        local icon = self.revealed and self.type.icon or unknownImg
         icon:draw(borderSize, borderSize)
+        if self.revealed and not self.opened then revealedOverlay:draw(borderSize, borderSize) end
     end
 
     gfx.popContext()
@@ -51,15 +47,57 @@ function Box:open()
     if self.opened or self.destroyed then return end
     self.opened = true
     self.revealed = true
+    if self.type.onOpen then self.type.onOpen(self) end
     self:redraw()
+    for _, box in pairs(pyramid:getBoxes()) do
+        if box ~= self then box:otherBoxOpened(self) end
+    end
+end
+
+function Box:press()
+    if self.destroyed or not self.opened then return end
+    if self.type.onPress then self.type.onPress(self) end
 end
 
 function Box:reveal()
+    if self.destroyed or self.revealed then return end
     self.revealed = true
+    if self.type.onReveal then self.type.onReveal(self) end
     self:redraw()
 end
 
 function Box:destroy()
+    if self.destroyed then return end
     self.destroyed = true
+    if self.opened and self.type.onDestroy then self.type.onDestroy(self) end
     self:redraw()
 end
+
+function Box:otherBoxOpened(box)
+    if not self.opened or self.destroyed then return end
+    if self.type.onOtherBoxOpened then self.type.onOtherBoxOpened(self, box) end
+end
+
+function Box:getAdjacent(distance)
+    return pyramid:getBoxes(function(box)
+        if box == self then return false end
+        return box.row == self.row and math.abs(box.col - self.col) <= distance
+            or math.abs(box.row - self.row) <= distance and math.abs(box.relativeCol - self.relativeCol) <= distance
+    end)
+end
+
+function Box:power()
+    if self.type.getPower then return self.type.getPower(self)
+    elseif self.type.power then return self.type.power end
+    return 0
+end
+
+function Box:name()
+    return tr("box."..self.type..".n")
+end
+
+function Box:desc()
+    return tr("box."..self.type..".n")
+end
+
+import "boxes"

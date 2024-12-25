@@ -93,7 +93,13 @@ function Cursor:moveVert(dir)
     until checkRow == self.row
 end
 
-function Cursor:onPressA() self:box():open() end
+function Cursor:onPressA()
+    if self:box().opened then
+        self:box():press()
+    else
+        self:box():open()
+    end
+end
 function Cursor:onPressB() end
 function Cursor:onPressRight() self:moveHoriz(1) end
 function Cursor:onPressLeft() self:moveHoriz(-1) end

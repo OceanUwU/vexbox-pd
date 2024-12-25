@@ -9,7 +9,7 @@ function Pyramid:init()
     self.x = 10
     self.y = 10
     self.size = consts.boxSize * maxRows
-    self.numRows = 10
+    self.numRows = 3
 
     self.rows = {}
     self.boxes = {}
@@ -33,14 +33,10 @@ function Pyramid:init()
 end
 
 function Pyramid:setup()
-    local newTypes = table.shallowcopy(consts.boxTypes)
+    local newTypes = {table.unpack(boxes, 1, self.numRows * (self.numRows + 1) / 2)}
     shuffle(newTypes)
     for i, box in ipairs(self.boxes) do
         box:reset(newTypes[i])
-        if i > 1 and math.random() > 0.5 then
-            --box:destroy()
-            box:redraw()
-        end
     end
 end
 
@@ -63,4 +59,28 @@ function Pyramid:nonDestroyedInRow(rowNum)
         if not box.destroyed then table.insert(row, box) end
     end
     return row
+end
+
+function Pyramid:getBoxes(predicate)
+    local boxes = {}
+    for _, box in ipairs(self.boxes) do
+        if box.row > self.numRows then break end
+        if not predicate or predicate(box) then
+            table.insert(boxes, box)
+        end
+    end
+    return boxes
+end
+
+function Pyramid:revealRandom(amount)
+    local revealed = {}
+    for i = 1, amount do
+        local boxes = self:getBoxes(function(box) return not box.revealed and not box.destroyed and not box.opened end)
+        if #boxes == 0 then break end
+        local box = boxes[math.random(#boxes)]
+        box:reveal()
+        table.insert(revealed, box)
+    end
+    if #revealed == 0 then return nil end
+    return revealed
 end
