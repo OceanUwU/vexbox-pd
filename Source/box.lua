@@ -1,8 +1,8 @@
 class("Box").extends()
 
 local boxList = { "win", "lose", "empty" }
-local boxImages = { unknown = gfx.image.new("assets/box/icon-unknown.png") }
-local borderImages<const> = { closed = gfx.image.new("assets/box/border/closed.png"), revealed = gfx.image.new("assets/box/border/revealed.png"), open = gfx.image.new("assets/box/border/open.png") }
+local boxImages = { unknown = loadImg("box/icon-unknown") }
+local borderImages<const> = { closed = loadImg("box/border/closed"), revealed = loadImg("box/border/revealed"), open = loadImg("box/border/open") }
 local borderSize<const> = 2
 local emptyImage<const> = gfx.image.new(22, 22)
 
