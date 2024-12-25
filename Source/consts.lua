@@ -1,0 +1,3 @@
+consts = {
+    boxSize = 22
+}

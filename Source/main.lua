@@ -10,10 +10,13 @@ gfx = playdate.graphics
 sfx = playdate.sound
 tr = gfx.getLocalizedText
 
+import "consts"
+import "pyramid"
+
 pd.getSystemMenu():addMenuItem(tr("menuoption.restart"), function() print("new game") end)
 
 function main()
-    gfx.drawText("hi", 5, 5)
+    pyramid = Pyramid()
 end
 
 main()
@@ -21,7 +24,7 @@ main()
 function pd.update()
     delta = pd.getElapsedTime()
     pd.resetElapsedTime()
-
+    pyramid:update()
     gfx.sprite.update()
     pd.timer.updateTimers()
 end
