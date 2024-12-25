@@ -1,0 +1,8 @@
+name=Vexbox
+author=ocean
+description=game where you open boxes
+bundleID=lol.ocean.vexboxpd
+version=0.0.1
+buildNumber=1
+imagePath=assets/launcher
+launchSoundPath=
