@@ -17,6 +17,7 @@ import "pyramid"
 pd.getSystemMenu():addMenuItem(tr("menuoption.restart"), function() print("new game") end)
 
 function main()
+    pd.display.setRefreshRate(50)
     loadBoxImages()
     lifetime = 0
     pyramid = Pyramid()
