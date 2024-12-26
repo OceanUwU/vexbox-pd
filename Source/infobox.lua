@@ -22,7 +22,7 @@ function Infobox:redraw()
     fontLg:drawText(self.title, iconX + 20 + 4, y + 4)
     gfx.setLineWidth(2)
     gfx.drawRect(iconX, y, 20, 20)
-    self.icon:draw(iconX + 1, y + 1)
+    if self.icon then self.icon:draw(iconX + 1, y + 1) end
     y += 20 + 5
 
     if not self.opened then
@@ -48,10 +48,10 @@ function Infobox:refresh()
         self.title = newTitle
         self.description = newDesc
         self.icon = box:displayIcon()
-        self.opened = not box.revealed or (box.opened and not box.destroyed)
+        self.opened = box.destroyed or not box.revealed or box.opened
     else
-        if self.opened ~= not box.revealed or (box.opened and not box.destroyed) then
-            self.opened = not box.revealed or (box.opened and not box.destroyed)
+        if self.opened ~= (box.destroyed or not box.revealed or box.opened) then
+            self.opened = box.destroyed or not box.revealed or box.opened
         end
     end
     self:redraw()

@@ -107,9 +107,6 @@ function Cursor:onPressA()
     end
     infobox:refresh()
 end
-function Cursor:onPressB()
-    pyramid:setup()
-end
 function Cursor:onPressRight() self:moveHoriz(1) end
 function Cursor:onPressLeft() self:moveHoriz(-1) end
 function Cursor:onPressDown() self:moveVert(1) end

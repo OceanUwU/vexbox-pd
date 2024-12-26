@@ -22,8 +22,6 @@ import "consts"
 import "pyramid"
 import "infobox"
 
-pd.getSystemMenu():addMenuItem(tr("menuoption.restart"), function() print("new game") end)
-
 function main()
     pd.display.setRefreshRate(50)
     lifetime = 0
@@ -47,7 +45,8 @@ function pd.update()
 end
 
 playdate.AButtonDown = function() pyramid.cursor:onPressA() end
-playdate.BButtonDown = function() pyramid.cursor:onPressB() end
+playdate.BButtonDown = function() pyramid.winLossBox:onPressB() end
+playdate.BButtonUp = function() pyramid.winLossBox:onReleaseB() end
 playdate.leftButtonDown = function() pyramid.cursor:onPressLeft() end
 playdate.rightButtonDown = function() pyramid.cursor:onPressRight() end
 playdate.upButtonDown = function() pyramid.cursor:onPressUp() end

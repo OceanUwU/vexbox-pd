@@ -2,6 +2,7 @@ class("Pyramid").extends()
 
 import "box"
 import "cursor"
+import "winlossbox"
 
 local maxRows<const> = 10
 local winSound<const> = loadSound("win")
@@ -38,6 +39,8 @@ function Pyramid:init()
     self.fsfxTable = nil
     self.winFrames = gfx.imagetable.new("assets/img/win-fx")
     self.loseFrames = gfx.imagetable.new("assets/img/lose-fx")
+
+    self.winLossBox = WinLossBox()
 end
 
 function Pyramid:setup()
@@ -61,6 +64,7 @@ end
 
 function Pyramid:update()
     self.cursor:update()
+    self.winLossBox:update()
     if self.fsfxTable then
         self.fsfxframe += 1
         if self.fsfxframe > self.fsfxTable:getLength() then
@@ -118,6 +122,7 @@ function Pyramid:internalWin()
     self.fsfxTable = self.winFrames
     self.fsfxframe = 0
     winSound:play()
+    self.winLossBox:show(true)
 end
 
 function Pyramid:internalLose()
@@ -125,4 +130,5 @@ function Pyramid:internalLose()
     self.fsfxTable = self.loseFrames
     self.fsfxframe = 0
     loseSound:play()
+    self.winLossBox:show(false)
 end
