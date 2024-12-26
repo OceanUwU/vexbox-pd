@@ -61,7 +61,7 @@ end
 
 function Log:onCrank(change, acceleratedChange)
     if #self.entries == 0 then return end
-    local move = change * 0.15
+    local move = change * 0.6
     self.tY += move
     self.y += move + 0.01
     self.tY = math.min(math.max(self.tY, self.sprite.height - entryHeight * #self.entries), self.sprite.height - entryHeight)

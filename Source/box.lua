@@ -56,7 +56,8 @@ function Box:open()
     self.opened = true
     self.revealed = true
     openSound:play()
-    pyramid:log(self, tr("log.open"):gsub("#", self:name()))
+    local customLog = "box."..self.type.id..".open"
+    pyramid:log(self, tr(customLog) == customLog and tr("log.open"):gsub("#", self:name()) or tr(customLog))
     if self.type.onOpen then self.type.onOpen(self) end
     self:redraw()
     for _, box in pairs(pyramid:getBoxes()) do
@@ -74,6 +75,8 @@ function Box:reveal()
     if not pyramid.playing or self.destroyed or self.revealed then return end
     self.revealed = true
     revealSound:play()
+    local customLog = "box."..self.type.id..".reveal"
+    pyramid:log(self, tr(customLog) == customLog and tr("log.reveal"):gsub("#", self:name()) or tr(customLog))
     if self.type.onReveal then self.type.onReveal(self) end
     self:redraw()
     pyramid:countStats()
@@ -81,6 +84,8 @@ end
 
 function Box:destroy()
     if not pyramid.playing or self.destroyed then return end
+    local customLog = self.revealed and ("box."..self.type.id..".destroy") or ""
+    pyramid:log(self, tr(customLog) == customLog and tr("log.destroy"):gsub("#", self:name()) or tr(customLog))
     self.destroyed = true
     destroySound:play()
     if self.opened and self.type.onDestroy then self.type.onDestroy(self) end
@@ -92,6 +97,8 @@ end
 function Box:close()
     if not pyramid.playing or self.destroyed or not self.opened then return end
     self.opened = false
+    local customLog = "box."..self.type.id..".close"
+    pyramid:log(self, tr(customLog) == customLog and tr("log.close"):gsub("#", self:name()) or tr(customLog))
     closeSound:play()
     self:redraw()
     pyramid:countStats()
@@ -132,6 +139,10 @@ function Box:displayIcon()
     if self.destroyed then return emptyIcon end
     if not self.revealed then return unknownImg end
     return self.type.icon
+end
+
+function Box:log()
+    pyramid:log(self, tr("box." .. self.type.id .. ".log"))
 end
 
 import "boxes"

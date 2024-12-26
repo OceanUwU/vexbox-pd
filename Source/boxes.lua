@@ -28,6 +28,7 @@ boxes = {
 }, {
     id = "bomb",
     onOtherBoxOpened = function(self, box)
+        self:log()
         self:destroy()
         for _, b in pairs(self:getAdjacent(1)) do b:destroy() end
     end
@@ -44,7 +45,10 @@ boxes = {
 }, {
     id = "telescope",
     power = 1,
-    onPress = function(self) pyramid:spendGold(self:power(), function() pyramid:revealRandom(1) end) end
+    onPress = function(self) pyramid:spendGold(self:power(), function()
+        self:log()
+        pyramid:revealRandom(1)    
+    end) end
 }, {
     id = "closeadjacent",
     onOpen = function(self)
