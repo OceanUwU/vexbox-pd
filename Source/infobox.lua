@@ -6,6 +6,7 @@ local goldImg<const> = loadImg("stats/coins")
 local openedImg<const> = loadImg("stats/opened")
 local revealedImg<const> = loadImg("stats/revealed")
 local destroyedImg<const> = loadImg("stats/destroyed")
+local drawnDescs<const> = {}
 
 function Infobox:init()
     self.sprite = gfx.sprite.new()
@@ -23,6 +24,19 @@ function Infobox:redraw()
     local img = gfx.image.new(self.sprite.width, self.sprite.height)
     gfx.pushContext(img)
 
+    local descImg = drawnDescs[self.description]
+    if descImg == nil then
+        descImg = gfx.imageWithText(self.description, self.sprite.width - 4 * 2, 200, nil, nil, nil, nil, fontMd)
+        drawnDescs[self.description] = descImg
+    end
+    local height = 6 + 20 + 5 + descImg.height + 16 + 3 + 16 + 3
+    if not self.opened then height += fontSm:getHeight() + 3 end
+    if pyramid.winsNeeded > 1 then height += fontSm:getHeight() + 5 end
+    gfx.setLineWidth(1)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(0, 0, self.sprite.width, height, 5)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.drawRoundRect(0, 0, self.sprite.width, height, 5)
     local y = 6
     local titleWidth = fontLg:getTextWidth(self.title)
     local iconX = (self.sprite.width - titleWidth) / 2 - (20 + 4) / 2 
@@ -37,8 +51,8 @@ function Infobox:redraw()
         y += fontSm:getHeight() + 3
     end
 
-    local descWidth, descHeight = gfx.drawTextInRect(self.description, 4, y, self.sprite.width - 4 * 2, 200, nil, nil, nil, fontMd)
-    y += descHeight + 5
+    descImg:draw(4, y)
+    y += descImg.height + 5
 
     goldImg:draw(5, y)
     fontLg:drawText(pyramid.gold, 5 + 16 + 3, y + 2)
@@ -63,9 +77,6 @@ function Infobox:redraw()
         fontSm:drawTextAligned(tr("info.unlock"):gsub("#", pyramid.winsNeeded), self.sprite.width / 2, y, kTextAlignment.center)
         y += fontSm:getHeight() + 5
     end
-
-    gfx.setLineWidth(1)
-    gfx.drawRoundRect(0, 0, self.sprite.width, y, 5)
 
     gfx.popContext()
     self.sprite:setImage(img)

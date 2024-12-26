@@ -22,6 +22,13 @@ function Pyramid:init()
         self.streak = gameData.streak
     end
 
+    self.bg = gfx.sprite.new()
+    self.bg:setSize(400, 240)
+    self.bg:setCenter(0, 0)
+    self.bg:add(0, 0)
+    self.bgOpacity = 0
+    self.targetBg = 0
+
     self.rows = {}
     self.boxes = {}
     for i = 1, 10 do
@@ -56,6 +63,7 @@ function Pyramid:setup()
     self.winsNeeded = -1
     self.gold = 0
     self.opened = 0
+    self.targetBg = 0
     for i, needed in ipairs(consts.winsNeeded) do
         if self.totalWins >= needed then self.numRows = i
         else
@@ -112,6 +120,17 @@ function Pyramid:update()
             self.fsfxsprite:setImage(self.fsfxTable:getImage(self.fsfxframe))
         end
     end
+    if self.targetBg ~= self.bgOpacity then
+        self.bgOpacity = pd.math.lerp(self.bgOpacity, self.targetBg, 1.0 - math.pow(0.00001, delta))
+        if math.abs(self.bgOpacity - self.targetBg) < 0.001 then self.bgOpacity = self.targetBg end
+
+        local img = gfx.image.new(self.bg.width, self.bg.height)
+        gfx.pushContext(img)
+        gfx.setDitherPattern(1 - self.bgOpacity, gfx.image.kDitherTypeBayer8x8)
+        gfx.fillRect(0, 0, self.bg.width, self.bg.height)
+        gfx.popContext()
+        self.bg:setImage(img)
+    end
 end
 
 function Pyramid:nonDestroyedInRow(rowNum)
@@ -156,6 +175,7 @@ end
 
 function Pyramid:internalWin()
     self.playing = false
+    self.targetBg = 0.1
     self.fsfxTable = self.winFrames
     self.fsfxframe = 0
     winSound:play()
@@ -166,6 +186,7 @@ function Pyramid:internalWin()
 end
 
 function Pyramid:internalLose()
+    self.targetBg = 0.5
     self.playing = false
     self.fsfxTable = self.loseFrames
     self.fsfxframe = 0

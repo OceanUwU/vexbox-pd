@@ -33,6 +33,9 @@ function WinLossBox:show(won)
     local img = gfx.image.new(self.sprite.width, self.sprite.height)
     gfx.pushContext(img)
 
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(-20, -20, self.sprite.width + 20, self.sprite.height + 20, 5)
+    gfx.setColor(gfx.kColorBlack)
     gfx.drawRoundRect(-20, -20, self.sprite.width + 20, self.sprite.height + 20, 5)
     fontLg:drawText(tr(won and "wl.win" or "wl.lose"), 5, 3)
     fontSm:drawText(tr("wl.restart"), 5, 18)
@@ -54,36 +57,37 @@ function WinLossBox:update()
         self.restartSprite:moveTo(restartPos, y + restartPos)
         self.restartButtonSprite:moveTo(self.restartSprite.x, self.restartSprite.y)
     end
-    if restarting then
+    if self.restarting then
         if restartSound:isPlaying() then
             self.restartSprite:setRotation(1 - math.pow(1 - restartSound:getOffset() / restartSound:getLength(), 3) * 360)
         else
             self.restartSprite:setRotation(0)
-            if not unrestarting then
+            if not self.unrestarting then
                 pyramid:setup()
                 self.showing = false
                 self.showTime = 0
                 self.startShowProgress = self.showProgress
             end
-            restarting = false
-            unrestarting = false
+            self.restarting = false
+            self.unrestarting = false
         end
     end
 end
 
 function WinLossBox:onPressB()
-    if not restarting then
-        restarting = true
+    if not self.restarting then
+        self.restarting = true
+        self.unrestarting = false
         restartSound:play(1, 1)
     else
-        unrestarting = false
+        self.unrestarting = false
         restartSound:setRate(1)
     end
 end
 
 function WinLossBox:onReleaseB()
-    if restarting and not unrestarting then
-        unrestarting = true
+    if self.restarting and not self.unrestarting then
+        self.unrestarting = true
         restartSound:setRate(-1)
     end
 end

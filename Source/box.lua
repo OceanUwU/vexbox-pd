@@ -33,6 +33,9 @@ function Box:redraw()
     gfx.pushContext(img)
 
     if not self.destroyed then
+        gfx.setColor(gfx.kColorWhite)
+        gfx.fillRect(0, 0, consts.boxSize, consts.boxSize)
+        gfx.setColor(gfx.kColorBlack)
         local border
         if self.opened then border = borderImages.open
         elseif self.revealed then border = borderImages.revealed
