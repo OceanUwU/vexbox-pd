@@ -30,7 +30,7 @@ boxes = {
     onOtherBoxOpened = function(self, box)
         self:destroy()
         for _, b in pairs(self:getAdjacent(1)) do b:destroy() end
-     end
+    end
 },
 
 { -- ROW 4
@@ -43,6 +43,9 @@ boxes = {
     id = "telescope",
 }, {
     id = "closeadjacent",
+    onOpen = function(self)
+        for _, box in pairs(self:getAdjacent(1)) do box:close() end
+    end
 },
 
 { -- ROW 5
