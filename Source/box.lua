@@ -4,7 +4,7 @@ local unknownImg<const> = loadImg("box/icon-unknown")
 local revealedOverlay<const> = loadImg("box/revealed")
 local borderImages<const> = { closed = loadImg("box/border/closed"), revealed = loadImg("box/border/revealed"), open = loadImg("box/border/open") }
 local borderSize<const> = 2
-
+local emptyIcon<const> = gfx.image.new(consts.boxSize - borderSize * 2, consts.boxSize - borderSize * 2)
 
 function Box:init(row, col)
     self.row = row
@@ -93,11 +93,19 @@ function Box:power()
 end
 
 function Box:name()
-    return tr("box."..self.type..".n")
+    if not self.revealed then return tr("box..n") end
+    return tr("box."..self.type.id..".n")
 end
 
 function Box:desc()
-    return tr("box."..self.type..".n")
+    if not self.revealed then return tr("box..d") end
+    return tr("box."..self.type.id..".d"):gsub("#", self:power())
+end
+
+function Box:displayIcon()
+    if self.destroyed then return emptyIcon end
+    if not self.revealed then return unknownImg end
+    return self.type.icon
 end
 
 import "boxes"

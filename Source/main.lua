@@ -10,9 +10,17 @@ gfx = playdate.graphics
 sfx = playdate.sound
 tr = gfx.getLocalizedText
 
+fontSm = gfx.font.new("assets/fonts/font-Bitmore")
+fontSm:setTracking(1)
+fontMd = gfx.font.new("assets/fonts/Nontendo-Light")
+fontMd:setTracking(1)
+fontLg = gfx.font.new("assets/fonts/font-pixieval-large-black")
+fontLg:setTracking(1)
+
 import "util"
 import "consts"
 import "pyramid"
+import "infobox"
 
 pd.getSystemMenu():addMenuItem(tr("menuoption.restart"), function() print("new game") end)
 
@@ -20,6 +28,8 @@ function main()
     pd.display.setRefreshRate(50)
     lifetime = 0
     pyramid = Pyramid()
+    infobox = Infobox()
+    pyramid:setup()
 end
 
 main()
@@ -28,7 +38,10 @@ function pd.update()
     delta = pd.getElapsedTime()
     lifetime += delta
     pd.resetElapsedTime()
+
     pyramid:update()
+    infobox:update()
+
     gfx.sprite.update()
     pd.timer.updateTimers()
 end

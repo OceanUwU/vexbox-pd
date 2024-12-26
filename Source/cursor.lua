@@ -99,6 +99,7 @@ function Cursor:onPressA()
     else
         self:box():open()
     end
+    infobox:refresh()
 end
 function Cursor:onPressB() end
 function Cursor:onPressRight() self:moveHoriz(1) end
@@ -109,6 +110,7 @@ function Cursor:onPressUp() self:moveVert(-1) end
 function Cursor:onMove()
     self.tX = self:box().sprite.x
     self.tY = self:box().sprite.y
+    infobox:refresh()
 end
 
 function Cursor:box() return pyramid.rows[self.row][self.col] end

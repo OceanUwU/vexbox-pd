@@ -28,8 +28,6 @@ function Pyramid:init()
     self.cursor.x = self.cursor.tX
     self.cursor.tY = self.boxes[1].sprite.y
     self.cursor.y = self.cursor.tY
-
-    self:setup()
 end
 
 function Pyramid:setup()
@@ -38,6 +36,7 @@ function Pyramid:setup()
     for i, box in ipairs(self.boxes) do
         box:reset(newTypes[i])
     end
+    infobox:refresh()
 end
 
 function Pyramid:repositionBoxes()

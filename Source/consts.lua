@@ -1,3 +1,3 @@
 consts = {
-    boxSize = 22
+    boxSize = 22,
 }
