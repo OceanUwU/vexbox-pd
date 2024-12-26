@@ -19,9 +19,6 @@ function Infobox:redraw()
     local y = 6
     local titleWidth = fontLg:getTextWidth(self.title)
     local iconX = (self.sprite.width - titleWidth) / 2 - (20 + 4) / 2 
-    print(self.sprite.width)
-    print(titleWidth)
-    print(iconX)
     fontLg:drawText(self.title, iconX + 20 + 4, y + 4)
     gfx.setLineWidth(2)
     gfx.drawRect(iconX, y, 20, 20)
