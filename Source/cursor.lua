@@ -32,6 +32,7 @@ function Cursor:update()
 end
 
 function Cursor:moveHoriz(dir)
+    if not pyramid.playing then return end
     local row = pyramid:nonDestroyedInRow(self.row)
     if #row == 0 then return
     elseif #row == 1 then
@@ -57,6 +58,7 @@ function Cursor:moveHoriz(dir)
 end
 
 function Cursor:moveVert(dir)
+    if not pyramid.playing then return end
     local checkRow = self.row
     repeat
         checkRow += dir
@@ -94,6 +96,7 @@ function Cursor:moveVert(dir)
 end
 
 function Cursor:onPressA()
+    if not pyramid.playing then return end
     if self:box().opened then
         self:box():press()
     else
@@ -101,7 +104,9 @@ function Cursor:onPressA()
     end
     infobox:refresh()
 end
-function Cursor:onPressB() end
+function Cursor:onPressB()
+    pyramid:setup()
+end
 function Cursor:onPressRight() self:moveHoriz(1) end
 function Cursor:onPressLeft() self:moveHoriz(-1) end
 function Cursor:onPressDown() self:moveVert(1) end

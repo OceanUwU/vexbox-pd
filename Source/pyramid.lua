@@ -28,9 +28,18 @@ function Pyramid:init()
     self.cursor.x = self.cursor.tX
     self.cursor.tY = self.boxes[1].sprite.y
     self.cursor.y = self.cursor.tY
+
+    self.fsfxsprite = gfx.sprite.new()
+    self.fsfxsprite:setCenter(0, 0)
+    self.fsfxsprite:add()
+    self.fsfxframe = 0
+    self.fsfxTable = nil
+    self.winFrames = gfx.imagetable.new("assets/img/win-fx")
+    self.loseFrames = gfx.imagetable.new("assets/img/lose-fx")
 end
 
 function Pyramid:setup()
+    self.playing = true
     local newTypes = {table.unpack(boxes, 1, self.numRows * (self.numRows + 1) / 2)}
     shuffle(newTypes)
     for i, box in ipairs(self.boxes) do
@@ -50,6 +59,16 @@ end
 
 function Pyramid:update()
     self.cursor:update()
+    if self.fsfxTable then
+        self.fsfxframe += 1
+        if self.fsfxframe > self.fsfxTable:getLength() then
+            self.fsfxsprite:setVisible(false)
+            self.fsfxTable = nil
+        else
+            self.fsfxsprite:setVisible(true)
+            self.fsfxsprite:setImage(self.fsfxTable:getImage(self.fsfxframe))
+        end
+    end
 end
 
 function Pyramid:nonDestroyedInRow(rowNum)
@@ -82,4 +101,24 @@ function Pyramid:revealRandom(amount)
     end
     if #revealed == 0 then return nil end
     return revealed
+end
+
+function Pyramid:win()
+    self:internalWin()
+end
+
+function Pyramid:lose()
+    self:internalLose()
+end
+
+function Pyramid:internalWin()
+    self.playing = false
+    self.fsfxTable = self.winFrames
+    self.fsfxframe = 0
+end
+
+function Pyramid:internalLose()
+    self.playing = false
+    self.fsfxTable = self.loseFrames
+    self.fsfxframe = 0
 end
