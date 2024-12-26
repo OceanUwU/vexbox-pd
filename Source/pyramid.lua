@@ -4,7 +4,6 @@ import "box"
 import "cursor"
 import "winlossbox"
 
-local maxRows<const> = 10
 local winSound<const> = loadSound("win")
 local loseSound<const> = loadSound("lose")
 local goldSound<const> = loadSound("gold")
@@ -12,7 +11,7 @@ local goldSound<const> = loadSound("gold")
 function Pyramid:init()
     self.x = 10
     self.y = 10
-    self.size = consts.boxSize * maxRows
+    self.size = consts.boxSize * consts.maxRows
     self.numRows = 0
     self.winsNeeded = -1
     self.totalWins = 0
@@ -94,7 +93,7 @@ end
 function Pyramid:repositionBoxes()
     local padding<const> = (self.size - consts.boxSize * self.numRows) / 2 + consts.boxSize / 2
     for _, box in ipairs(self.boxes) do
-        box.sprite:moveTo(self.x + consts.boxSize / 2 + (box.col - 1 + (maxRows - box.row) / 2) * consts.boxSize, self.y + padding + (box.row - 1) * consts.boxSize)
+        box.sprite:moveTo(self.x + consts.boxSize / 2 + (box.col - 1 + (consts.maxRows - box.row) / 2) * consts.boxSize, self.y + padding + (box.row - 1) * consts.boxSize)
         box.sprite:setVisible(box.row <= self.numRows)
         box.relativeCol = box.col * 2 + self.numRows - box.row
     end
@@ -162,7 +161,7 @@ function Pyramid:internalWin()
     winSound:play()
     self.winLossBox:show(true)
     self.totalWins += 1
-    self.streak += 1
+    if self.numRows >= consts.maxRows then self.streak += 1 end
     pd.datastore.write({ wins = self.totalWins, streak = self.streak })
 end
 

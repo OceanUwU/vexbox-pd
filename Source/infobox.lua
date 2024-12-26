@@ -44,15 +44,19 @@ function Infobox:redraw()
     fontLg:drawText(pyramid.gold, 5 + 16 + 3, y + 2)
     openedImg:draw(44, y)
     fontLg:drawText(pyramid.opened, 44 + 16 + 3, y + 2)
+    if pyramid.numRows < consts.maxRows then y += 10 end
     winsImg:draw(self.sprite.width - 16 - 5, y)
     fontLg:drawTextAligned(pyramid.totalWins, self.sprite.width - 16 - 5 - 3, y + 2, kTextAlignment.right)
+    if pyramid.numRows < consts.maxRows then y -= 10 end
     y += 16 + 3
     revealedImg:draw(5, y)
     fontLg:drawText(pyramid.revealed, 5 + 16 + 3, y + 2)
     destroyedImg:draw(44, y)
     fontLg:drawText(pyramid.destroyed, 44 + 16 + 3, y + 2)
-    streakImg:draw(self.sprite.width - 16 - 5, y)
-    fontLg:drawTextAligned(pyramid.streak, self.sprite.width - 16 - 5 - 3, y + 2, kTextAlignment.right)
+    if pyramid.numRows >= consts.maxRows then
+        streakImg:draw(self.sprite.width - 16 - 5, y)
+        fontLg:drawTextAligned(pyramid.streak, self.sprite.width - 16 - 5 - 3, y + 2, kTextAlignment.right)
+    end
     y += 16 + 3
 
     if pyramid.winsNeeded > 1 then
