@@ -4,6 +4,7 @@
 "wl.win"="You Win!"
 "wl.lose"="You Lose."
 "wl.restart"="Hold B to restart."
+"log.open"="# was opened."
 "box..n"="Mystery Box"
 "box..d"="Press A to open this box."
 "box.destroyed.n"="Destroyed"

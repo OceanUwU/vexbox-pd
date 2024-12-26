@@ -1,5 +1,7 @@
 class("Infobox").extends()
 
+import "log"
+
 local winsImg<const> = loadImg("stats/wins")
 local streakImg<const> = loadImg("stats/streak")
 local goldImg<const> = loadImg("stats/coins")
@@ -13,6 +15,7 @@ function Infobox:init()
     self.sprite:setCenter(0, 0)
     self.sprite:moveTo(pyramid.x + pyramid.size + pyramid.x, pyramid.y)
     self.sprite:setSize(400 - self.sprite.x - pyramid.x, 240 - self.sprite.y - pyramid.y)
+    self.log = Log(self.sprite.x, self.sprite.y + 50, self.sprite.width, self.sprite.height - 50)
     self.sprite:add()
     self.icon = gfx.image.new(1, 1)
     self.title = ""
@@ -109,4 +112,5 @@ function Infobox:update()
         self.redrawQueued = false
         self:realRedraw()
     end
+    self.log:update()
 end

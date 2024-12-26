@@ -51,3 +51,4 @@ playdate.leftButtonDown = function() pyramid.cursor:onPressLeft() end
 playdate.rightButtonDown = function() pyramid.cursor:onPressRight() end
 playdate.upButtonDown = function() pyramid.cursor:onPressUp() end
 playdate.downButtonDown = function() pyramid.cursor:onPressDown() end
+playdate.cranked = function(change, acceleratedChange) infobox.log:onCrank(change, acceleratedChange) end

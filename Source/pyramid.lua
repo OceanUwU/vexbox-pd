@@ -18,8 +18,8 @@ function Pyramid:init()
     self.streak = 0
     local gameData = pd.datastore.read()
     if gameData then
-        self.totalWins = gameData.wins
-        self.streak = gameData.streak
+        self.totalWins = gameData.w
+        self.streak = gameData.s
     end
 
     self.bg = gfx.sprite.new()
@@ -71,7 +71,6 @@ function Pyramid:setup()
             break
         end
     end
-    print(self.numRows)
     self.playing = true
     local newTypes = {table.unpack(boxes, 1, self.numRows * (self.numRows + 1) / 2)}
     shuffle(newTypes)
@@ -82,6 +81,7 @@ function Pyramid:setup()
     self:repositionBoxes()
     self.cursor:reposition()
     infobox:refresh()
+    infobox.log:reset()
 end
 
 function Pyramid:countStats()
@@ -182,7 +182,7 @@ function Pyramid:internalWin()
     self.winLossBox:show(true)
     self.totalWins += 1
     if self.numRows >= consts.maxRows then self.streak += 1 end
-    pd.datastore.write({ wins = self.totalWins, streak = self.streak })
+    pd.datastore.write({ w = self.totalWins, s = self.streak })
 end
 
 function Pyramid:internalLose()
@@ -193,7 +193,7 @@ function Pyramid:internalLose()
     loseSound:play()
     self.winLossBox:show(false)
     self.streak = 0
-    pd.datastore.write({ wins = self.totalWins, streak = self.streak })
+    pd.datastore.write({ w = self.totalWins, s = self.streak })
 end
 
 function Pyramid:gainGold(amount)
@@ -206,4 +206,8 @@ function Pyramid:spendGold(cost, action)
         self.gold -= cost
         action()
     end
+end
+
+function Pyramid:log(box, text)
+    infobox.log:add(box:displayIcon(), text)
 end

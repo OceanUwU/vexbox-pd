@@ -56,6 +56,7 @@ function Box:open()
     self.opened = true
     self.revealed = true
     openSound:play()
+    pyramid:log(self, tr("log.open"):gsub("#", self:name()))
     if self.type.onOpen then self.type.onOpen(self) end
     self:redraw()
     for _, box in pairs(pyramid:getBoxes()) do
