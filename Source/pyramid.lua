@@ -4,12 +4,14 @@ import "box"
 import "cursor"
 
 local maxRows<const> = 10
+local winSound<const> = loadSound("win")
+local loseSound<const> = loadSound("lose")
 
 function Pyramid:init()
     self.x = 10
     self.y = 10
     self.size = consts.boxSize * maxRows
-    self.numRows = 3
+    self.numRows = 4
 
     self.rows = {}
     self.boxes = {}
@@ -115,10 +117,12 @@ function Pyramid:internalWin()
     self.playing = false
     self.fsfxTable = self.winFrames
     self.fsfxframe = 0
+    winSound:play()
 end
 
 function Pyramid:internalLose()
     self.playing = false
     self.fsfxTable = self.loseFrames
     self.fsfxframe = 0
+    loseSound:play()
 end

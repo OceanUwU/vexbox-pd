@@ -48,10 +48,10 @@ function Infobox:refresh()
         self.title = newTitle
         self.description = newDesc
         self.icon = box:displayIcon()
-        self.opened = box.opened and not box.destroyed
+        self.opened = not box.revealed or (box.opened and not box.destroyed)
     else
-        if self.opened ~= box.opened then
-            self.opened = box.opened
+        if self.opened ~= not box.revealed or (box.opened and not box.destroyed) then
+            self.opened = not box.revealed or (box.opened and not box.destroyed)
         end
     end
     self:redraw()

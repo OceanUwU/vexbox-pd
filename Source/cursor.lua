@@ -2,6 +2,9 @@ class("Cursor").extends()
 
 local maxDistance<const> = 2
 
+local selectSound<const> = loadSound("select")
+selectSound:setVolume(0.4)
+
 function Cursor:init()
     self.x = 0
     self.y = 0
@@ -115,6 +118,7 @@ function Cursor:onPressUp() self:moveVert(-1) end
 function Cursor:onMove()
     self.tX = self:box().sprite.x
     self.tY = self:box().sprite.y
+    selectSound:play()
     infobox:refresh()
 end
 

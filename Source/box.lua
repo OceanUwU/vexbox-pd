@@ -6,6 +6,11 @@ local borderImages<const> = { closed = loadImg("box/border/closed"), revealed = 
 local borderSize<const> = 2
 local emptyIcon<const> = gfx.image.new(consts.boxSize - borderSize * 2, consts.boxSize - borderSize * 2)
 
+local closeSound<const> = loadSound("close")
+local destroySound<const> = loadSound("destroy")
+local openSound<const> = loadSound("open")
+local revealSound<const> = loadSound("reveal")
+
 function Box:init(row, col)
     self.row = row
     self.col = col
@@ -44,9 +49,10 @@ function Box:redraw()
 end
 
 function Box:open()
-    if self.opened or self.destroyed then return end
+    if not pyramid.playing or self.opened or self.destroyed then return end
     self.opened = true
     self.revealed = true
+    openSound:play()
     if self.type.onOpen then self.type.onOpen(self) end
     self:redraw()
     for _, box in pairs(pyramid:getBoxes()) do
@@ -55,26 +61,36 @@ function Box:open()
 end
 
 function Box:press()
-    if self.destroyed or not self.opened then return end
+    if not pyramid.playing or self.destroyed or not self.opened then return end
     if self.type.onPress then self.type.onPress(self) end
 end
 
 function Box:reveal()
-    if self.destroyed or self.revealed then return end
+    if not pyramid.playing or self.destroyed or self.revealed then return end
     self.revealed = true
+    revealSound:play()
     if self.type.onReveal then self.type.onReveal(self) end
     self:redraw()
 end
 
 function Box:destroy()
-    if self.destroyed then return end
+    if not pyramid.playing or self.destroyed then return end
     self.destroyed = true
+    destroySound:play()
     if self.opened and self.type.onDestroy then self.type.onDestroy(self) end
+    if pyramid.cursor:box() == self then infobox:refresh() end
+    self:redraw()
+end
+
+function Box:close()
+    if not pyramid.playing or self.destroyed or not self.opened then return end
+    self.opened = false
+    closeSound:play()
     self:redraw()
 end
 
 function Box:otherBoxOpened(box)
-    if not self.opened or self.destroyed then return end
+    if not pyramid.playing or not self.opened or self.destroyed then return end
     if self.type.onOtherBoxOpened then self.type.onOtherBoxOpened(self, box) end
 end
 
@@ -93,11 +109,13 @@ function Box:power()
 end
 
 function Box:name()
+    if self.destroyed then return tr("box.destroyed.n") end
     if not self.revealed then return tr("box..n") end
     return tr("box."..self.type.id..".n")
 end
 
 function Box:desc()
+    if self.destroyed then return tr("box.destroyed.d") end
     if not self.revealed then return tr("box..d") end
     return tr("box."..self.type.id..".d"):gsub("#", self:power())
 end
