@@ -1,5 +1,12 @@
 class("Infobox").extends()
 
+local winsImg<const> = loadImg("stats/wins")
+local streakImg<const> = loadImg("stats/streak")
+local goldImg<const> = loadImg("stats/coins")
+local openedImg<const> = loadImg("stats/opened")
+local revealedImg<const> = loadImg("stats/revealed")
+local destroyedImg<const> = loadImg("stats/destroyed")
+
 function Infobox:init()
     self.sprite = gfx.sprite.new()
     self.sprite:setCenter(0, 0)
@@ -32,6 +39,26 @@ function Infobox:redraw()
 
     local descWidth, descHeight = gfx.drawTextInRect(self.description, 4, y, self.sprite.width - 4 * 2, 200, nil, nil, nil, fontMd)
     y += descHeight + 5
+
+    goldImg:draw(5, y)
+    fontLg:drawText(pyramid.gold, 5 + 16 + 3, y + 2)
+    openedImg:draw(44, y)
+    fontLg:drawText(pyramid.opened, 44 + 16 + 3, y + 2)
+    winsImg:draw(self.sprite.width - 16 - 5, y)
+    fontLg:drawTextAligned(pyramid.totalWins, self.sprite.width - 16 - 5 - 3, y + 2, kTextAlignment.right)
+    y += 16 + 3
+    revealedImg:draw(5, y)
+    fontLg:drawText(pyramid.revealed, 5 + 16 + 3, y + 2)
+    destroyedImg:draw(44, y)
+    fontLg:drawText(pyramid.destroyed, 44 + 16 + 3, y + 2)
+    streakImg:draw(self.sprite.width - 16 - 5, y)
+    fontLg:drawTextAligned(pyramid.streak, self.sprite.width - 16 - 5 - 3, y + 2, kTextAlignment.right)
+    y += 16 + 3
+
+    if pyramid.winsNeeded > 1 then
+        fontSm:drawTextAligned(tr("info.unlock"):gsub("#", pyramid.winsNeeded), self.sprite.width / 2, y, kTextAlignment.center)
+        y += fontSm:getHeight() + 5
+    end
 
     gfx.setLineWidth(1)
     gfx.drawRoundRect(0, 0, self.sprite.width, y, 5)

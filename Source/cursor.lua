@@ -112,9 +112,13 @@ function Cursor:onPressLeft() self:moveHoriz(-1) end
 function Cursor:onPressDown() self:moveVert(1) end
 function Cursor:onPressUp() self:moveVert(-1) end
 
-function Cursor:onMove()
+function Cursor:reposition()
     self.tX = self:box().sprite.x
-    self.tY = self:box().sprite.y
+    self.tY = self:box().sprite.y    
+end
+
+function Cursor:onMove()
+    self:reposition()
     selectSound:play()
     infobox:refresh()
 end

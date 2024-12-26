@@ -35,12 +35,16 @@ boxes = {
 
 { -- ROW 4
     id = "onegold",
-    power = 1
+    power = 1,
+    onOpen = function(self) pyramid:gainGold(self:power()) end
 }, {
     id = "twogold",
-    power = 2
+    power = 2,
+    onOpen = function(self) pyramid:gainGold(self:power()) end
 }, {
     id = "telescope",
+    power = 1,
+    onPress = function(self) pyramid:spendGold(self:power(), function() pyramid:revealRandom(1) end) end
 }, {
     id = "closeadjacent",
     onOpen = function(self)

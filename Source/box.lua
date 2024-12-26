@@ -58,6 +58,7 @@ function Box:open()
     for _, box in pairs(pyramid:getBoxes()) do
         if box ~= self then box:otherBoxOpened(self) end
     end
+    pyramid:countStats()
 end
 
 function Box:press()
@@ -71,6 +72,7 @@ function Box:reveal()
     revealSound:play()
     if self.type.onReveal then self.type.onReveal(self) end
     self:redraw()
+    pyramid:countStats()
 end
 
 function Box:destroy()
@@ -80,6 +82,7 @@ function Box:destroy()
     if self.opened and self.type.onDestroy then self.type.onDestroy(self) end
     if pyramid.cursor:box() == self then infobox:refresh() end
     self:redraw()
+    pyramid:countStats()
 end
 
 function Box:close()
@@ -87,6 +90,7 @@ function Box:close()
     self.opened = false
     closeSound:play()
     self:redraw()
+    pyramid:countStats()
 end
 
 function Box:otherBoxOpened(box)
