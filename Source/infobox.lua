@@ -18,9 +18,14 @@ function Infobox:init()
     self.title = ""
     self.description = ""
     self.opened = false
+    self.redrawQueued = false
 end
 
 function Infobox:redraw()
+    self.redrawQueued = true
+end
+
+function Infobox:realRedraw()
     local img = gfx.image.new(self.sprite.width, self.sprite.height)
     gfx.pushContext(img)
 
@@ -29,7 +34,7 @@ function Infobox:redraw()
         descImg = gfx.imageWithText(self.description, self.sprite.width - 4 * 2, 200, nil, nil, nil, nil, fontMd)
         drawnDescs[self.description] = descImg
     end
-    local height = 6 + 20 + 5 + descImg.height + 16 + 3 + 16 + 3
+    local height = 6 + 20 + 5 + descImg.height + 5 + 16 + 3 + 16 + 3
     if not self.opened then height += fontSm:getHeight() + 3 end
     if pyramid.winsNeeded > 1 then height += fontSm:getHeight() + 5 end
     gfx.setLineWidth(1)
@@ -100,5 +105,8 @@ function Infobox:refresh()
 end
 
 function Infobox:update()
-
+    if self.redrawQueued then
+        self.redrawQueued = false
+        self:realRedraw()
+    end
 end
