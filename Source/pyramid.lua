@@ -7,6 +7,7 @@ import "winlossbox"
 local winSound<const> = loadSound("win")
 local loseSound<const> = loadSound("lose")
 local goldSound<const> = loadSound("gold")
+musicPlayer = loadSound("boiler")
 
 function Pyramid:init()
     self.x = 10
@@ -58,7 +59,14 @@ function Pyramid:init()
     self.winLossBox = WinLossBox()
 end
 
+function Pyramid:availableTypes()
+    local newTypes = { table.unpack(boxes, 1, self.numRows * (self.numRows + 1) / 2) }
+    shuffle(newTypes)
+    return newTypes
+end
+
 function Pyramid:setup()
+    musicPlayer:stop()
     self.numRows = 0
     self.winsNeeded = -1
     self.gold = 0
@@ -72,8 +80,7 @@ function Pyramid:setup()
         end
     end
     self.playing = true
-    local newTypes = {table.unpack(boxes, 1, self.numRows * (self.numRows + 1) / 2)}
-    shuffle(newTypes)
+    local newTypes = self:availableTypes()
     for i, box in ipairs(self.boxes) do
         box:reset(newTypes[i])
     end
@@ -165,15 +172,38 @@ function Pyramid:revealRandom(amount)
     return revealed
 end
 
+function Pyramid:getBox(type)
+    for _, box in ipairs(self.boxes) do
+        if box.row > self.numRows then break end
+        if box.type.id == type and box.opened and not box.destroyed then
+            return box
+        end
+    end
+end
+
+function Pyramid:winOrLose(win)
+    for _, box in ipairs(self:getBoxes(function(b) return b.type.id == "invert" and b.opened and not b.destroyed end)) do
+        box:log(win and "win" or "lose")
+        win = not win
+    end
+    if win then self:internalWin() else self:internalLose() end
+end
+
 function Pyramid:win()
-    self:internalWin()
+    self:winOrLose(true)
 end
 
 function Pyramid:lose()
-    self:internalLose()
+    self:winOrLose(false)
 end
 
 function Pyramid:internalWin()
+    local curse = self:getBox("curse")
+    if curse then
+        curse:log()
+        curse:destroy()
+        return
+    end
     self.playing = false
     self.targetBg = 0.1
     self.fsfxTable = self.winFrames
@@ -182,17 +212,30 @@ function Pyramid:internalWin()
     self.winLossBox:show(true)
     self.totalWins += 1
     if self.numRows >= consts.maxRows then self.streak += 1 end
-    pd.datastore.write({ w = self.totalWins, s = self.streak })
+    self:save()
 end
 
 function Pyramid:internalLose()
+    local life = self:getBox("life")
+    if life then
+        life:log()
+        life:destroy()
+        return
+    end
     self.targetBg = 0.5
     self.playing = false
     self.fsfxTable = self.loseFrames
     self.fsfxframe = 0
     loseSound:play()
     self.winLossBox:show(false)
+    self:destroyStreak()
+end
+
+function Pyramid:destroyStreak()
     self.streak = 0
+end
+
+function Pyramid:save()
     pd.datastore.write({ w = self.totalWins, s = self.streak })
 end
 

@@ -14,7 +14,7 @@ local revealSound<const> = loadSound("reveal")
 function Box:init(row, col)
     self.row = row
     self.col = col
-    self.type = ""
+    self.type = nil
     self.sprite = gfx.sprite.new()
     self.sprite:add()
     self:reset(nil)
@@ -22,7 +22,7 @@ end
 
 function Box:reset(newType)
     self.type = newType
-    self.revealed = false--math.random() > 0.5
+    self.revealed = math.random() > 0.5--false
     self.opened = false
     self.destroyed = false
     if newType ~= nil then self:redraw() end
@@ -53,6 +53,10 @@ end
 
 function Box:open()
     if not pyramid.playing or self.opened or self.destroyed then return end
+    if self.realType then
+        self.type = self.realType
+        self.realType = nil
+    end
     self.opened = true
     self.revealed = true
     openSound:play()
@@ -81,6 +85,7 @@ end
 
 function Box:reveal()
     if not pyramid.playing or self.destroyed or self.revealed then return end
+    if self.type.preReveal then self.type.preReveal(self) end
     self.revealed = true
     revealSound:play()
     local customLog = "box."..self.type.id..".reveal"
@@ -108,14 +113,16 @@ function Box:close()
     local customLog = "box."..self.type.id..".close"
     pyramid:log(self, tr(customLog) == customLog and tr("log.close"):gsub("#", self:name()) or tr(customLog))
     closeSound:play()
+    if self.type.onClose then self.type.onClose(self) end
     self:redraw()
     pyramid:countStats()
 end
 
 function Box:transform(type)
-    if not pyramid.playing then return end
+    if not pyramid.playing or self.destroyed then return end
     self.opened = false
     self.oldName = self:name()
+    if self.opened and self.type.onTransform then self.type.onTransform(self, type) end
     self.type = type
     if self.opened and not self.destroyed then
         pyramid:log(self, tr("log.transform"):gsub("##", oldName):gsub("#", self:name()))
@@ -138,16 +145,19 @@ function Box:otherBoxOpened(box)
 end
 
 function Box:otherBoxPressed(box)
-    if not self.type.otherBoxPressed or not self.opened or self.destroyed or not pyramid.playing then return false end
-    return self.type.otherBoxPressed(self, box)
+    if not self.type.onOtherBoxPressed or not self.opened or self.destroyed or not pyramid.playing then return false end
+    return self.type.onOtherBoxPressed(self, box)
+end
+
+function Box:isAdjacent(box, distance)
+    return (box.row == self.row and math.abs(box.col - self.col) <= distance
+        or math.abs(box.row - self.row) <= distance and math.abs(box.relativeCol - self.relativeCol) <= distance)
 end
 
 function Box:getAdjacent(distance, predicate)
     return pyramid:getBoxes(function(box)
         if box == self then return false end
-        return (box.row == self.row and math.abs(box.col - self.col) <= distance
-            or math.abs(box.row - self.row) <= distance and math.abs(box.relativeCol - self.relativeCol) <= distance)
-            and (not predicate or predicate(box))
+        return self:isAdjacent(box, distance) and (not predicate or predicate(box))
     end)
 end
 
@@ -170,7 +180,7 @@ end
 function Box:desc()
     if self.destroyed then return tr("box.destroyed.d") end
     if not self.revealed then return tr("box..d") end
-    return tr("box."..self.type.id..".d"):gsub("##", self:n2()):gsub("#", self:n()())
+    return tr("box."..self.type.id..".d"):gsub("##", self:n2()):gsub("#", self:n())
 end
 
 function Box:displayIcon()

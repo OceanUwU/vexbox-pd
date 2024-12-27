@@ -63,6 +63,7 @@ function WinLossBox:update()
         else
             self.restartSprite:setRotation(0)
             if not self.unrestarting then
+                pyramid:destroyStreak()
                 pyramid:setup()
                 self.showing = false
                 self.showTime = 0
