@@ -137,13 +137,13 @@ boxes = {
 },
 
 { -- ROW 10
-    id = "",
+    id = "paytoclose",
 }, {
     id = "checkbox",
 }, {
-    id = "",
+    id = "police",
 }, {
-    id = "",
+    id = "safeguard",
 }, {
     id = "gamer",
 }, {
