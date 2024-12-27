@@ -25,9 +25,6 @@ function Box:reset(newType)
     self.revealed = false
     self.opened = false
     self.destroyed = false
-    if pyramid ~= nil and math.random() > 0.2 then
-        self:reveal()
-    end
     if newType ~= nil then self:redraw() end
 end
 
