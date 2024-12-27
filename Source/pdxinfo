@@ -5,4 +5,4 @@ bundleID=lol.ocean.vexboxpd
 version=0.0.1
 buildNumber=1
 imagePath=assets/launcher
-launchSoundPath=
+launchSoundPath=assets/sfx/open.wav
