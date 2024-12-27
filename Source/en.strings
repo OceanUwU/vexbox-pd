@@ -105,7 +105,7 @@
 "box.map.d"="On Open: Reveal the X Box."
 "box.sacrifice.n"="Sacrificial Box"
 "box.sacrifice.d"="Press A: Destroy a random box, then reveal a random box."
-"box.3d.n"="3D Box"
+"box.3d.n"="3D Gogglebox"
 "box.3d.d"="On Open: Reveal # random other boxes."
 "box.rowreveal.n"="Horeyezon Box"
 "box.rowreveal.d"="On Open: Reveal all boxes in this row."
@@ -113,10 +113,8 @@
 "box.life.d"="The next time you would lose, destroy this instead."
 "box.princess.n"="Princess Box"
 "box.princess.d"="On Open: If the Dragon is revealed, lose. Otherwise, gain 3 Gold."
-
 "box.checkbox.n"="Checkbox"
 "box.checkbox.d"="Whenever you open an unrevealed box, reveal a random box."
-
 "box.gamer.n"="Gamer Box"
 "box.gamer.d"="On Open: If you won the last run, win."
 "box.daredevil.n"="Daredevil Box"
@@ -133,5 +131,5 @@
 "box.police.d"="On Open: if 15 or more boxes are open, lose."
 "box.paytoclose.n"="Closer Box"
 "box.paytoclose.d"="Press A: Spend # Gold to close a random other box."
-"box.safeguard.n"="Safeguarded Box"
+"box.safeguard.n"="Safeguard Box"
 "box.safeguard.d"="The next time you would open an unrevealed box, reveal it instead and destroy this."
