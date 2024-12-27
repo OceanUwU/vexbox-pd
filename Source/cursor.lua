@@ -98,9 +98,7 @@ end
 
 function Cursor:onPressA()
     if not pyramid.playing then return end
-    if self:box().opened then
-        self:box():press()
-    else
+    if not self:box():press() then
         self:box():open()
     end
     infobox:refresh()

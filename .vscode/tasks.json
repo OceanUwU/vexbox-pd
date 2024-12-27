@@ -12,8 +12,18 @@
             "label": "Playdate: Run"
         },
         {
+            "type": "shell",
+            "command": "zip -r Vexbox.pdx.zip Vexbox.pdx",
+            "label": "Playdate: Zip up"
+        },
+        {
+            "type": "shell",
+            "command": "[ -d $PLAYDATE_SDK_PATH/Disk/Games/Vexbox.pdx ] && rm -rf $PLAYDATE_SDK_PATH/Disk/Games/Vexbox.pdx; cp -r Vexbox.pdx $PLAYDATE_SDK_PATH/Disk/Games/Vexbox.pdx",
+            "label": "Playdate: Copy"
+        },
+        {
             "label": "Playdate: Build and Run",
-            "dependsOn": ["Playdate: Build", "Playdate: Run"],
+            "dependsOn": ["Playdate: Build", "Playdate: Zip up", "Playdate: Copy", "Playdate: Run"],
             "dependsOrder": "sequence",
             "problemMatcher": [],
             "group": {

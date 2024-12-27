@@ -67,8 +67,16 @@ function Box:open()
 end
 
 function Box:press()
-    if not pyramid.playing or self.destroyed or not self.opened then return end
-    if self.type.onPress then self.type.onPress(self) end
+    if not pyramid.playing or self.destroyed then return false end
+    for _, box in pairs(pyramid:getBoxes()) do
+        if box:otherBoxPressed(self) then return true end
+    end
+    if not self.opened then return false end
+    if self.type.onPress then
+        self.type.onPress(self)
+        return true
+    end
+    return false
 end
 
 function Box:reveal()
@@ -104,22 +112,52 @@ function Box:close()
     pyramid:countStats()
 end
 
+function Box:transform(type)
+    if not pyramid.playing then return end
+    self.opened = false
+    self.oldName = self:name()
+    self.type = type
+    if self.opened and not self.destroyed then
+        pyramid:log(self, tr("log.transform"):gsub("##", oldName):gsub("#", self:name()))
+    end
+    self:redraw()
+end
+
+function Box:revive()
+    if not pyramid.playing or not self.destroyed then return end
+    self.destroyed = false
+    self.opened = false
+    pyramid:log(self, tr("log.revive"):gsub("#", self:name()))
+    self:redraw()
+    pyramid:countStats()
+end
+
 function Box:otherBoxOpened(box)
     if not pyramid.playing or not self.opened or self.destroyed then return end
     if self.type.onOtherBoxOpened then self.type.onOtherBoxOpened(self, box) end
 end
 
-function Box:getAdjacent(distance)
+function Box:otherBoxPressed(box)
+    if not self.type.otherBoxPressed or not self.opened or self.destroyed or not pyramid.playing then return false end
+    return self.type.otherBoxPressed(self, box)
+end
+
+function Box:getAdjacent(distance, predicate)
     return pyramid:getBoxes(function(box)
         if box == self then return false end
-        return box.row == self.row and math.abs(box.col - self.col) <= distance
-            or math.abs(box.row - self.row) <= distance and math.abs(box.relativeCol - self.relativeCol) <= distance
+        return (box.row == self.row and math.abs(box.col - self.col) <= distance
+            or math.abs(box.row - self.row) <= distance and math.abs(box.relativeCol - self.relativeCol) <= distance)
+            and (not predicate or predicate(box))
     end)
 end
 
-function Box:power()
-    if self.type.getPower then return self.type.getPower(self)
-    elseif self.type.power then return self.type.power end
+function Box:n()
+    if self.type.n then return self.type.n end
+    return 0
+end
+
+function Box:n2()
+    if self.type.n2 then return self.type.n2 end
     return 0
 end
 
@@ -132,7 +170,7 @@ end
 function Box:desc()
     if self.destroyed then return tr("box.destroyed.d") end
     if not self.revealed then return tr("box..d") end
-    return tr("box."..self.type.id..".d"):gsub("#", self:power())
+    return tr("box."..self.type.id..".d"):gsub("##", self:n2()):gsub("#", self:n()())
 end
 
 function Box:displayIcon()
@@ -141,8 +179,8 @@ function Box:displayIcon()
     return self.type.icon
 end
 
-function Box:log()
-    pyramid:log(self, tr("box." .. self.type.id .. ".log"))
+function Box:log(key)
+    pyramid:log(self, tr("box." .. self.type.id .. "." .. (key or "log")))
 end
 
 import "boxes"
