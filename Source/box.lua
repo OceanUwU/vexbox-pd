@@ -22,7 +22,7 @@ end
 
 function Box:reset(newType)
     self.type = newType
-    self.revealed = math.random() > 0.5
+    self.revealed = false--math.random() > 0.5
     self.opened = false
     self.destroyed = false
     if newType ~= nil then self:redraw() end

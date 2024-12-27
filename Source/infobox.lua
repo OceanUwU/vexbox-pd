@@ -50,8 +50,8 @@ function Infobox:realRedraw()
     local iconX = (self.sprite.width - titleWidth) / 2 - (20 + 4) / 2 
     fontLg:drawText(self.title, iconX + 20 + 4, y + 4)
     gfx.setLineWidth(2)
-    gfx.drawRect(iconX, y, 20, 20)
-    if self.icon then self.icon:draw(iconX + 1, y + 1) end
+    gfx.drawRect(math.floor(iconX+0.5), y, 20, 20)
+    if self.icon then self.icon:draw(math.floor(iconX+0.5) + 1, y + 1) end
     y += 20 + 5
 
     if not self.opened then

@@ -59,103 +59,103 @@ boxes = {
 { -- ROW 5
     id = "empty",
 }, {
-    id = "",
+    id = "lock",
 }, {
-    id = "",
+    id = "key",
 }, {
-    id = "",
+    id = "trigaze",
 }, {
-    id = "",
+    id = "walkie",
 },
 
 { -- ROW 6
-    id = "",
+    id = "mimic",
 }, {
-    id = "",
+    id = "heartbreak",
 }, {
-    id = "",
+    id = "demo",
 }, {
-    id = "",
+    id = "safe",
 }, {
-    id = "",
+    id = "rowbomb",
 }, {
-    id = "",
+    id = "invert",
 },
 
 { -- ROW 7
-    id = "",
+    id = "school",
 }, {
-    id = "",
+    id = "fish",
 }, {
-    id = "",
+    id = "smartbomb",
 }, {
-    id = "",
+    id = "tape",
 }, {
-    id = "",
+    id = "rowwin",
 }, {
-    id = "",
+    id = "curse",
 }, {
-    id = "",
+    id = "music",
 },
 
 { -- ROW 8
-    id = "",
+    id = "sword",
 }, {
-    id = "",
+    id = "dragon",
 }, {
-    id = "",
+    id = "shadow",
 }, {
-    id = "",
+    id = "bux",
 }, {
-    id = "",
+    id = "mine",
 }, {
-    id = "",
+    id = "slots",
 }, {
-    id = "",
+    id = "waterfall",
 }, {
-    id = "",
+    id = "ghost",
 },
 
 { -- ROW 9
-    id = "",
+    id = "dna",
 }, {
-    id = "",
+    id = "fairy",
 }, {
-    id = "",
+    id = "xmarksthespot",
 }, {
-    id = "",
+    id = "map",
 }, {
-    id = "",
+    id = "sacrifice",
 }, {
-    id = "",
+    id = "3d",
 }, {
-    id = "",
+    id = "rowreveal",
 }, {
-    id = "",
+    id = "life",
 }, {
-    id = "",
+    id = "princess",
 },
 
 { -- ROW 10
     id = "",
 }, {
-    id = "",
+    id = "checkbox",
 }, {
     id = "",
 }, {
     id = "",
 }, {
-    id = "",
+    id = "gamer",
 }, {
-    id = "",
+    id = "daredevil",
 }, {
-    id = "",
+    id = "cloak",
 }, {
-    id = "",
+    id = "wand",
 }, {
-    id = "",
+    id = "hat",
 }, {
-    id = "",
+    id = "crumbling",
 }
 
 }
