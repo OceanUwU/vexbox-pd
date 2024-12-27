@@ -27,7 +27,7 @@ boxes = {
     onDestroy = function(self) pyramid:win() end
 }, {
     id = "bomb",
-    onOtherBoxOpened = function(self, box)
+    onOtherBoxOpened = function(self, box, wasRevealed)
         self:log()
         self:destroy()
         for _, b in pairs(self:getAdjacent(1)) do b:destroy() end
@@ -63,7 +63,7 @@ boxes = {
     id = "lock",
 }, {
     id = "key",
-    onOtherBoxOpened = function(self, box)
+    onOtherBoxOpened = function(self, box, wasRevealed)
         if box.type.id == "lock" then
             self:log()
             pyramid:win()
@@ -94,7 +94,7 @@ boxes = {
 { -- ROW 6
     id = "mimic",
     n = 50,
-    preOpen = function(self)
+    preReveal = function(self)
         self.realType = self.type
         self.type = pyramid:availableTypes()[1]
     end,
@@ -107,7 +107,7 @@ boxes = {
 }, {
     id = "heartbreak",
     n = 10,
-    onOtherBoxOpened = function(self, box)
+    onOtherBoxOpened = function(self, box, wasRevealed)
         if math.random() * 100 < self:n() then
             self:log()
             pyramid:lose()
@@ -125,7 +125,7 @@ boxes = {
     onDestroy = function(self) pyramid:lose() end
 }, {
     id = "rowbomb",
-    onOtherBoxOpened = function(self, box)
+    onOtherBoxOpened = function(self, box, wasRevealed)
         if box.row == self.row then
             self:destroy()
             for _, b in pairs(pyramid.rows[self.row]) do b:destroy() end
@@ -137,6 +137,7 @@ boxes = {
 
 { -- ROW 7
     id = "school",
+    n = 3,
     onOpen = function(self)
         local boxes = pyramid:getBoxes(function(b) return not b.destroyed and not b.revealed end)
         shuffle(boxes)
@@ -146,8 +147,7 @@ boxes = {
     id = "fish",
     n = 3,
     onOpen = function(self)
-        print(#pyramid:getBoxes(function(b) return not b.destroyed and b.opened and b.type.id == "fish" end))
-        if #pyramid:getBoxes(function(b) return not b.destroyed and b.opened and b.type.id == "fish" end) >= n then
+        if #pyramid:getBoxes(function(b) return not b.destroyed and b.opened and b.type.id == "fish" end) >= self:n() then
             self:log()
             pyramid:win()
         end
@@ -157,7 +157,7 @@ boxes = {
     onOpen = function(self)
         for _, b in pairs(self:getAdjacent(1)) do b:reveal() end
     end,
-    onOtherBoxOpened = function(self, box)
+    onOtherBoxOpened = function(self, box, wasRevealed)
         self:log()
         self:destroy()
         for _, b in pairs(self:getAdjacent(1)) do b:destroy() end
@@ -165,7 +165,7 @@ boxes = {
 }, {
     id = "tape",
     onOtherBoxPressed = function(self, box)
-        if box.opened then
+        if box ~= self and box.opened then
             self:destroy()
             box:close()
             return true
@@ -205,7 +205,7 @@ boxes = {
     id = "shadow",
     n = 1,
     onOpen = function(self)
-        local boxes = pyramid:getBoxes(function(b) return not b.destroyed and b.opened end)
+        local boxes = pyramid:getBoxes(function(b) return b ~= self and not b.destroyed and b.opened end)
         shuffle(boxes)
         for i = 1, self:n() do if boxes[i] then boxes[i]:close() end end
     end
@@ -216,8 +216,11 @@ boxes = {
 }, {
     id = "mine",
     n = 1,
-    onOtherBoxOpened = function(self, box)
-        if self:isAdjacent(box, 1) then pyramid:gainGold(self:n()) end
+    onOtherBoxOpened = function(self, box, wasRevealed)
+        if self:isAdjacent(box, 1) then
+            self:log()
+            pyramid:gainGold(self:n())
+        end
     end
 }, {
     id = "slots",
@@ -275,7 +278,7 @@ boxes = {
         end
         local boxes = pyramid:getBoxes(function(b) return not b.destroyed and not b.revealed end)
         shuffle(boxes)
-        for i = 1, self:n2() do if boxes[i] then boxes[i]:transform(boxesById.fish) end end
+        for i = 1, self:n2() do if boxes[i] then boxes[i]:transform(boxesById.fairy) end end
     end
 }, {
     id = "xmarksthespot",
@@ -357,6 +360,10 @@ boxes = {
     end) end
 }, {
     id = "checkbox",
+    n = 1,
+    onOtherBoxOpened = function(self, box, wasRevealed)
+        if not wasRevealed then pyramid:revealRandom(self:n()) end
+    end
 }, {
     id = "police",
     n = 15,
@@ -424,7 +431,7 @@ boxes = {
 }, {
     id = "crumbling",
     n = 1,
-    onOtherBoxOpened = function(self, box)
+    onOtherBoxOpened = function(self, box, wasRevealed)
         local boxes = pyramid:getBoxes(function(b) return not b.destroyed end)
         for i = 1, self:n() do if boxes[i] then boxes[i]:destroy() end end
     end

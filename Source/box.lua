@@ -22,9 +22,12 @@ end
 
 function Box:reset(newType)
     self.type = newType
-    self.revealed = math.random() > 0.5--false
+    self.revealed = false
     self.opened = false
     self.destroyed = false
+    if pyramid ~= nil and math.random() > 0.2 then
+        self:reveal()
+    end
     if newType ~= nil then self:redraw() end
 end
 
@@ -57,6 +60,7 @@ function Box:open()
         self.type = self.realType
         self.realType = nil
     end
+    local wasRevealed = self.revealed
     self.opened = true
     self.revealed = true
     openSound:play()
@@ -65,7 +69,7 @@ function Box:open()
     if self.type.onOpen then self.type.onOpen(self) end
     self:redraw()
     for _, box in pairs(pyramid:getBoxes()) do
-        if box ~= self then box:otherBoxOpened(self) end
+        if box ~= self then box:otherBoxOpened(self, wasRevealed) end
     end
     pyramid:countStats()
 end
@@ -124,6 +128,7 @@ function Box:transform(type)
     self.oldName = self:name()
     if self.opened and self.type.onTransform then self.type.onTransform(self, type) end
     self.type = type
+    if self.realType then self.realType = nil end
     if self.opened and not self.destroyed then
         pyramid:log(self, tr("log.transform"):gsub("##", oldName):gsub("#", self:name()))
     end
@@ -139,9 +144,9 @@ function Box:revive()
     pyramid:countStats()
 end
 
-function Box:otherBoxOpened(box)
+function Box:otherBoxOpened(box, wasRevealed)
     if not pyramid.playing or not self.opened or self.destroyed then return end
-    if self.type.onOtherBoxOpened then self.type.onOtherBoxOpened(self, box) end
+    if self.type.onOtherBoxOpened then self.type.onOtherBoxOpened(self, box, wasRevealed) end
 end
 
 function Box:otherBoxPressed(box)

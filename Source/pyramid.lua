@@ -7,7 +7,7 @@ import "winlossbox"
 local winSound<const> = loadSound("win")
 local loseSound<const> = loadSound("lose")
 local goldSound<const> = loadSound("gold")
-musicPlayer = loadSound("boiler")
+musicPlayer = sfx.fileplayer.new("assets/sfx/boiler")
 
 function Pyramid:init()
     self.x = 10
@@ -26,7 +26,7 @@ function Pyramid:init()
     self.bg = gfx.sprite.new()
     self.bg:setSize(400, 240)
     self.bg:setCenter(0, 0)
-    self.bg:add(0, 0)
+    self.bg:add()
     self.bgOpacity = 0
     self.targetBg = 0
 
