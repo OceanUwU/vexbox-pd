@@ -35,7 +35,6 @@ function Cursor:update()
 end
 
 function Cursor:moveHoriz(dir)
-    if not pyramid.playing then return end
     local row = pyramid:nonDestroyedInRow(self.row)
     if #row == 0 then return
     elseif #row == 1 then
@@ -61,7 +60,6 @@ function Cursor:moveHoriz(dir)
 end
 
 function Cursor:moveVert(dir)
-    if not pyramid.playing then return end
     local checkRow = self.row
     repeat
         checkRow += dir
