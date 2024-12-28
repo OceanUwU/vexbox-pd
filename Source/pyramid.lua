@@ -3,6 +3,7 @@ class("Pyramid").extends()
 import "box"
 import "cursor"
 import "winlossbox"
+import "fx"
 
 local winSound<const> = loadSound("win")
 local loseSound<const> = loadSound("lose")
@@ -42,6 +43,8 @@ function Pyramid:init()
     end
     self:repositionBoxes()
 
+    self.fx = FX()
+    
     self.cursor = Cursor()
     self.cursor.tX = self.boxes[1].sprite.x
     self.cursor.x = self.cursor.tX
@@ -115,6 +118,7 @@ function Pyramid:repositionBoxes()
 end
 
 function Pyramid:update()
+    self.fx:update()
     self.cursor:update()
     self.winLossBox:update()
     if self.fsfxTable then

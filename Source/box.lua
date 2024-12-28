@@ -62,6 +62,7 @@ function Box:open()
     self.opened = true
     self.revealed = true
     openSound:play()
+    pyramid.fx:addOpenEffect(self.sprite.x, self.sprite.y)
     local customLog = "box."..self.type.id..".open"
     pyramid:log(self, tr(customLog) == customLog and tr("log.open"):gsub("#", self:name()) or tr(customLog))
     if self.type.onOpen then self.type.onOpen(self) end
@@ -122,7 +123,7 @@ end
 
 function Box:transform(type)
     if not pyramid.playing or self.destroyed then return end
-    self.oldName = self:name()
+    local oldName = self:name()
     if self.opened and self.type.onTransform then self.type.onTransform(self, type) end
     self.type = type
     if self.realType then self.realType = nil end
