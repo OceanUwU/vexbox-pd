@@ -22,6 +22,7 @@ end
 
 function Box:reset(newType)
     self.type = newType
+    self.realType = nil
     self.revealed = false
     self.opened = false
     self.destroyed = false
