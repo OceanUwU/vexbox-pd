@@ -134,7 +134,7 @@
 "box.map.open"="Reading map..."
 "box.sacrifice.n"="Sacrificial Box"
 "box.sacrifice.d"="Press A: Destroy a random box, then reveal a random box."
-"box.3d.n"="3D Gogglebox"
+"box.3d.n"="Gogglebox"
 "box.3d.d"="On Open: Reveal # random other boxes."
 "box.3d.d"="Eye see Z..."
 "box.rowreveal.n"="Horeyezon Box"

@@ -22,6 +22,9 @@ function Box:init(row, col)
 end
 
 function Box:reset(newType)
+    if self.type and (self.destroyed or self.revealed or self.opened) then
+        self:prepDrawTransition()
+    end
     self.type = newType
     self.realType = nil
     self.revealed = false
@@ -30,14 +33,19 @@ function Box:reset(newType)
     if newType ~= nil then self:redraw() end
 end
 
+function Box:prepDrawTransition()
+    self.transitionProgress = 1
+    self.oldImg = self.sprite:getImage()
+end
+
 function Box:redraw()
     local img = gfx.image.new(consts.boxSize, consts.boxSize)
     gfx.pushContext(img)
-
+    
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRect(0, 0, consts.boxSize, consts.boxSize)
+    gfx.setColor(gfx.kColorBlack)
     if not self.destroyed then
-        gfx.setColor(gfx.kColorWhite)
-        gfx.fillRect(0, 0, consts.boxSize, consts.boxSize)
-        gfx.setColor(gfx.kColorBlack)
         local border
         if self.opened then border = borderImages.open
         elseif self.revealed then border = borderImages.revealed
@@ -47,10 +55,23 @@ function Box:redraw()
         local icon = self.revealed and self.type.icon or unknownImg
         icon:draw(borderSize, borderSize)
         if self.revealed and not self.opened then revealedOverlay:draw(borderSize, borderSize) end
+        if self.transitionProgress then img = self.oldImg:blendWithImage(img, self.transitionProgress, gfx.image.kDitherTypeBayer8x8) end
     end
 
     gfx.popContext()
     self.sprite:setImage(img)
+    self.sprite:setVisible(not self.destroyed and self.row <= pyramid.numRows)
+end
+
+function Box:update()
+    if self.transitionProgress then
+        self.transitionProgress -= 6.0 * delta
+        if self.transitionProgress < 0.05 then
+            self.transitionProgress = nil
+            self.oldImg = nil
+        end
+        self:redraw()
+    end
 end
 
 function Box:open()
@@ -67,6 +88,7 @@ function Box:open()
     local customLog = "box."..self.type.id..".open"
     pyramid:log(self, tr(customLog) == customLog and tr("log.open"):gsub("#", self:name()) or tr(customLog))
     if self.type.onOpen then self.type.onOpen(self) end
+    self:prepDrawTransition()
     self:redraw()
     for _, box in pairs(pyramid:getBoxes()) do
         if box ~= self then box:otherBoxOpened(self, wasRevealed) end
@@ -121,6 +143,7 @@ function Box:close()
     closeSound:play()
     pyramid.fx:addEffect(CloseEffect(self.sprite.x, self.sprite.y))
     if self.type.onClose then self.type.onClose(self) end
+    self:prepDrawTransition()
     self:redraw()
     pyramid:countStats()
 end
@@ -143,6 +166,7 @@ function Box:revive()
     self.opened = false
     pyramid.fx:addEffect(RevealEffect(self.sprite.x, self.sprite.y))
     pyramid:log(self, tr("log.revive"):gsub("#", self:name()))
+    self:prepDrawTransition()
     self:redraw()
     pyramid:countStats()
 end

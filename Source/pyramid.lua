@@ -121,6 +121,7 @@ function Pyramid:update()
     self.fx:update()
     self.cursor:update()
     self.winLossBox:update()
+    for _, box in ipairs(self.boxes) do box:update() end
     if self.fsfxTable then
         self.fsfxframe += 1
         if self.fsfxframe > self.fsfxTable:getLength() then
