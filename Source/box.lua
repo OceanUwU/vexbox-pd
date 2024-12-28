@@ -62,7 +62,7 @@ function Box:open()
     self.opened = true
     self.revealed = true
     openSound:play()
-    pyramid.fx:addOpenEffect(self.sprite.x, self.sprite.y)
+    pyramid.fx:addEffect(OpenEffect(self.sprite.x, self.sprite.y))
     local customLog = "box."..self.type.id..".open"
     pyramid:log(self, tr(customLog) == customLog and tr("log.open"):gsub("#", self:name()) or tr(customLog))
     if self.type.onOpen then self.type.onOpen(self) end
@@ -91,6 +91,7 @@ function Box:reveal()
     if self.type.preReveal then self.type.preReveal(self) end
     self.revealed = true
     revealSound:play()
+    pyramid.fx:addEffect(RevealEffect(self.sprite.x, self.sprite.y))
     local customLog = "box."..self.type.id..".reveal"
     pyramid:log(self, tr(customLog) == customLog and tr("log.reveal"):gsub("#", self:name()) or tr(customLog))
     if self.type.onReveal then self.type.onReveal(self) end
@@ -104,7 +105,7 @@ function Box:destroy()
     pyramid:log(self, tr(customLog) == customLog and tr("log.destroy"):gsub("#", self:name()) or tr(customLog))
     self.destroyed = true
     destroySound:play()
-    pyramid.fx:addDestroyEffect(self.sprite.x, self.sprite.y)
+    pyramid.fx:addEffect(DestroyEffect(self.sprite.x, self.sprite.y))
     if self.opened and self.type.onDestroy then self.type.onDestroy(self) end
     if pyramid.cursor:box() == self then infobox:refresh() end
     self:redraw()
@@ -117,6 +118,7 @@ function Box:close()
     local customLog = "box."..self.type.id..".close"
     pyramid:log(self, tr(customLog) == customLog and tr("log.close"):gsub("#", self:name()) or tr(customLog))
     closeSound:play()
+    pyramid.fx:addEffect(CloseEffect(self.sprite.x, self.sprite.y))
     if self.type.onClose then self.type.onClose(self) end
     self:redraw()
     pyramid:countStats()

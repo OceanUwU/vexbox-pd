@@ -4,12 +4,8 @@ function FX:init()
     self.effects = {}
 end
 
-function FX:addOpenEffect(x, y)
-    table.insert(self.effects, OpenEffect(x, y))
-end
-
-function FX:addDestroyEffect(x, y)
-    table.insert(self.effects, DestroyEffect(x, y))
+function FX:addEffect(effect)
+    table.insert(self.effects, effect)
 end
 
 function FX:update()
@@ -76,6 +72,37 @@ function OpenEffect:update()
 end
 
 
+class("CloseEffect").extends(Effect)
+
+local closeEffectSize<const> = 60
+
+function CloseEffect:init(x, y)
+    CloseEffect.super.init(self, x, y)
+    self.length = 0.8
+end
+
+function CloseEffect:update()
+    CloseEffect.super.update(self)
+
+    local img = gfx.image.new(closeEffectSize + 2, closeEffectSize + 2)
+    gfx.pushContext(img)
+
+    local a = math.sin(1 - self.progress)
+    local r = (1 - math.pow(self.progress, 3)) * closeEffectSize / 2
+    gfx.setColor(gfx.kColorWhite)
+    gfx.setLineWidth(3)
+    gfx.setDitherPattern(a, gfx.image.kDitherTypeBayer8x8)
+    gfx.drawCircleAtPoint(img.width / 2, img.height / 2, r)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.setLineWidth(1)
+    gfx.setDitherPattern(a, gfx.image.kDitherTypeBayer8x8)
+    gfx.drawCircleAtPoint(img.width / 2, img.height / 2, r)
+
+    gfx.popContext()
+    self:setImage(img)
+end
+
+
 class("DestroyEffect").extends(Effect)
 
 local destroyEffectStokes<const> = 30
@@ -97,7 +124,7 @@ function DestroyEffect:update()
 
     local x = img.width / 2
     local a = math.sin(self.progress)
-    local r = (1 - math.pow(1 - self.progress, 3)) * openEffectSize / 2
+    local r = (1 - math.pow(1 - self.progress, 3)) * destroyEffectSize / 2
     local rIn = r * 0.7
     gfx.setColor(gfx.kColorWhite)
     gfx.setLineWidth(3)
@@ -120,5 +147,46 @@ function DestroyEffect:drawSpokes(x, y, rOut, rIn)
         local a1 = self.angle + i / destroyEffectStokes * math.pi * 2
         local a2 = self.angle + (i + 1) / destroyEffectStokes * math.pi * 2
         gfx.drawLine(x + math.cos(a1) * r1, y + math.sin(a1) * r1, x + math.cos(a2) * r2, y + math.sin(a2) * r2)
+    end
+end
+
+
+class("RevealEffect").extends(Effect)
+
+local revealEffectLines<const> = 4
+local revealEffectSize<const> = 65
+
+function RevealEffect:init(x, y)
+    RevealEffect.super.init(self, x, y)
+    self.length = 0.8
+    self.angle = math.random()
+    self.rotVel = math.random() - 0.5
+end
+
+function RevealEffect:update()
+    RevealEffect.super.update(self)
+    self.angle += self.rotVel * delta
+
+    local img = gfx.image.new(revealEffectSize + 2, revealEffectSize + 2)
+    gfx.pushContext(img)
+
+    local x = img.width / 2
+    local rOut = (1 - math.pow(1 - self.progress, 3)) * revealEffectSize / 2
+    local rIn = math.pow(self.progress, 3) * revealEffectSize / 2
+    gfx.setColor(gfx.kColorWhite)
+    gfx.setLineWidth(3)
+    self:drawSpokes(x, x, rOut, rIn)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.setLineWidth(1)
+    self:drawSpokes(x, x, rOut, rIn)
+
+    gfx.popContext()
+    self:setImage(img)
+end
+
+function RevealEffect:drawSpokes(x, y, rOut, rIn)
+    for i = 1, revealEffectLines do
+        local a = self.angle + i / revealEffectLines * math.pi * 2;
+        gfx.drawLine(x + math.cos(a) * rIn, y + math.sin(a) * rIn, x + math.cos(a) * rOut, y + math.sin(a) * rOut)
     end
 end
