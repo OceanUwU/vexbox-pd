@@ -110,7 +110,7 @@ function Cursor:onPressUp() self:moveVert(-1) end
 
 function Cursor:reposition()
     self.tX = self:box().sprite.x
-    self.tY = self:box().sprite.y    
+    self.tY = self:box().sprite.y
 end
 
 function Cursor:onMove()

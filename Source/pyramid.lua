@@ -111,8 +111,22 @@ end
 function Pyramid:repositionBoxes()
     local padding<const> = (self.size - consts.boxSize * self.numRows) / 2 + consts.boxSize / 2
     for _, box in ipairs(self.boxes) do
-        box.sprite:moveTo(self.x + consts.boxSize / 2 + (box.col - 1 + (consts.maxRows - box.row) / 2) * consts.boxSize, self.y + padding + (box.row - 1) * consts.boxSize)
-        box.sprite:setVisible(box.row <= self.numRows)
+        if box.row > self.numRows then break end
+        box.sprite:moveTo(self.x + consts.boxSize / 2 + (box.col - 1 + (consts.maxRows - box.row) / 2) * consts.boxSize, box.sprite.y)
+        box.tY = self.y + padding + (box.row - 1) * consts.boxSize
+        box.sprite.tScale = box.row <= self.numRows and 1 or 0
+        local shouldShow = box.row <= self.numRows
+        local shows = box.sprite:isVisible()
+        if box.y == nil then
+            box.y = box.tY
+            shows = false
+        end
+        if not shows then
+            box.y = box.tY
+            box.sprite:moveTo(box.sprite.x, box.y)
+            box.scale = 0
+        end
+        box.sprite:setVisible(shouldShow)
         box.relativeCol = box.col * 2 + self.numRows - box.row
     end
 end

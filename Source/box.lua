@@ -16,13 +16,14 @@ function Box:init(row, col)
     self.row = row
     self.col = col
     self.type = nil
+    self.scale = 0
     self.sprite = gfx.sprite.new()
     self.sprite:add()
     self:reset(nil)
 end
 
 function Box:reset(newType)
-    if self.type and (self.destroyed or self.revealed or self.opened) then
+    if self.type and not self.destroyed and (self.revealed or self.opened) then
         self:prepDrawTransition()
     end
     self.type = newType
@@ -71,6 +72,22 @@ function Box:update()
             self.oldImg = nil
         end
         self:redraw()
+    end
+    if self.tY then
+        self.y = pd.math.lerp(self.y, self.tY, 1.0 - math.pow(0.00001, delta))
+        if math.abs(self.tY - self.y) < 0.5 then
+            self.y = self.tY
+            self.tY = nil
+        end
+        self.sprite:moveTo(self.sprite.x, self.y)
+        pyramid.cursor:reposition()
+    end
+    if self.scale < 1 and self.sprite:isVisible() then
+        self.scale = pd.math.lerp(self.scale, 1, 1.0 - math.pow(0.00001, delta))
+        if self.scale > 0.95 then
+            self.scale = 1
+        end
+        self.sprite:setScale(self.scale)
     end
 end
 
@@ -131,6 +148,7 @@ function Box:destroy()
     pyramid.fx:addEffect(DestroyEffect(self.sprite.x, self.sprite.y))
     if self.opened and self.type.onDestroy then self.type.onDestroy(self) end
     if pyramid.cursor:box() == self then infobox:refresh() end
+    self.scale = 0
     self:redraw()
     pyramid:countStats()
 end

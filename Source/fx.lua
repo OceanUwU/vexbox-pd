@@ -105,7 +105,7 @@ end
 
 class("DestroyEffect").extends(Effect)
 
-local destroyEffectStokes<const> = 30
+local destroyEffectStokes<const> = 24
 local destroyEffectSize<const> = 60
 
 function DestroyEffect:init(x, y)
