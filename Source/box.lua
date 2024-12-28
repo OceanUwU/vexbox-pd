@@ -10,6 +10,7 @@ local closeSound<const> = loadSound("close")
 local destroySound<const> = loadSound("destroy")
 local openSound<const> = loadSound("open")
 local revealSound<const> = loadSound("reveal")
+local useSound<const> = loadSound("use")
 
 function Box:init(row, col)
     self.row = row
@@ -143,6 +144,11 @@ function Box:revive()
     pyramid:log(self, tr("log.revive"):gsub("#", self:name()))
     self:redraw()
     pyramid:countStats()
+end
+
+function Box:useFX()
+    useSound:play()
+    pyramid.fx:addEffect(OpenEffect(self.sprite.x, self.sprite.y))
 end
 
 function Box:otherBoxOpened(box, wasRevealed)

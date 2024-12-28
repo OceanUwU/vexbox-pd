@@ -47,6 +47,7 @@ boxes = {
     n = 1,
     n2 = 1,
     onPress = function(self) pyramid:spendGold(self:n(), function()
+        self:useFX()
         self:log()
         pyramid:revealRandom(self:n2())
     end) end
@@ -228,6 +229,7 @@ boxes = {
     n = 2,
     n2 = 3,
     onPress = function(self) pyramid:spendGold(self:n(), function()
+        self:useFX()
         self:log()
         local boxes = pyramid:getBoxes(function(b) return not b.destroyed and not b.revealed end)
         shuffle(boxes)
@@ -316,6 +318,7 @@ boxes = {
     n = 1,
     n2 = 1,
     onPress = function (self)
+        self:useFX()
         local boxes = pyramid:getBoxes(function(b) return not b.destroyed end)
         shuffle(boxes)
         for i = 1, self:n() do if boxes[i] then boxes[i]:destroy() end end
@@ -354,6 +357,7 @@ boxes = {
     n = 1,
     n2 = 1,
     onPress = function(self) pyramid:spendGold(self:n(), function()
+        self:useFX()
         local boxes = pyramid:getBoxes(function(b) return b ~= self and b.opened and not b.destroyed end)
         shuffle(boxes)
         self:log()
@@ -397,6 +401,7 @@ boxes = {
     id = "daredevil",
     n = 40,
     onPress = function(self)
+        self:useFX()
         if math.random() * 100 < self:n() then
             self:log("win")
             pyramid:win()
