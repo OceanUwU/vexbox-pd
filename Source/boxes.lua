@@ -127,6 +127,7 @@ boxes = {
     id = "rowbomb",
     onOtherBoxOpened = function(self, box, wasRevealed)
         if box.row == self.row then
+            self:log()
             self:destroy()
             for _, b in pairs(pyramid.rows[self.row]) do b:destroy() end
         end
@@ -353,7 +354,7 @@ boxes = {
     n = 1,
     n2 = 1,
     onPress = function(self) pyramid:spendGold(self:n(), function()
-        local boxes = pyramid:getBoxes(1, function(b) return b ~= self and b.opened and not b.destroyed end)
+        local boxes = pyramid:getBoxes(function(b) return b ~= self and b.opened and not b.destroyed end)
         shuffle(boxes)
         self:log()
         for i = 1, self:n2() do if boxes[i] then boxes[i]:close() end end
@@ -433,6 +434,7 @@ boxes = {
     n = 1,
     onOtherBoxOpened = function(self, box, wasRevealed)
         local boxes = pyramid:getBoxes(function(b) return not b.destroyed end)
+        if #boxes > 0 then self:log() end
         for i = 1, self:n() do if boxes[i] then boxes[i]:destroy() end end
     end
 }
