@@ -121,7 +121,6 @@ end
 
 function Box:transform(type)
     if not pyramid.playing or self.destroyed then return end
-    self.opened = false
     self.oldName = self:name()
     if self.opened and self.type.onTransform then self.type.onTransform(self, type) end
     self.type = type
