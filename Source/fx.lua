@@ -190,3 +190,28 @@ function RevealEffect:drawSpokes(x, y, rOut, rIn)
         gfx.drawLine(x + math.cos(a) * rIn, y + math.sin(a) * rIn, x + math.cos(a) * rOut, y + math.sin(a) * rOut)
     end
 end
+
+
+class("CoinEffect").extends(Effect)
+
+local goldImg<const> = loadImg("stats/coins")
+
+function CoinEffect:init()
+    CoinEffect.super.init(self, math.random(50, 190), 250)
+    self.length = 1.5 + math.random() * 1.0
+    self.angle = math.random() * math.pi * 2
+    self.rotVel = math.random() * 8 - 4
+    self.xVel = math.random() * 40 - 20
+    self.jumpHeight = math.random(80, 200)
+    self.realX = self.x
+    self:setImage(goldImg)
+    self:setScale(2)
+end
+
+function CoinEffect:update()
+    CoinEffect.super.update(self)
+    self.angle += self.rotVel * delta
+    self.realX += self.xVel * delta
+    self:moveTo(self.realX, 250 - self.jumpHeight * math.sin(self.progress * math.pi))
+    self:setRotation(self.angle)
+end

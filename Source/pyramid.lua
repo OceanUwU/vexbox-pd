@@ -44,7 +44,7 @@ function Pyramid:init()
     self:repositionBoxes()
 
     self.fx = FX()
-    
+
     self.cursor = Cursor()
     self.cursor.tX = self.boxes[1].sprite.x
     self.cursor.x = self.cursor.tX
@@ -246,6 +246,9 @@ end
 function Pyramid:gainGold(amount)
     self.gold += amount
     goldSound:play()
+    for i = 1, amount do
+        self.fx:addEffect(CoinEffect())
+    end
 end
 
 function Pyramid:spendGold(cost, action)
