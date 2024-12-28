@@ -141,6 +141,7 @@ function Box:revive()
     if not pyramid.playing or not self.destroyed then return end
     self.destroyed = false
     self.opened = false
+    pyramid.fx:addEffect(RevealEffect(self.sprite.x, self.sprite.y))
     pyramid:log(self, tr("log.revive"):gsub("#", self:name()))
     self:redraw()
     pyramid:countStats()

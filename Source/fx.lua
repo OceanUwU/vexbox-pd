@@ -199,8 +199,8 @@ local goldImg<const> = loadImg("stats/coins")
 function CoinEffect:init()
     CoinEffect.super.init(self, math.random(50, 190), 250)
     self.length = 1.5 + math.random() * 1.0
-    self.angle = math.random() * math.pi * 2
-    self.rotVel = math.random() * 8 - 4
+    self.angle = math.random() * 360
+    self.rotVel = math.random() * 180 - 90
     self.xVel = math.random() * 40 - 20
     self.jumpHeight = math.random(80, 200)
     self.realX = self.x
