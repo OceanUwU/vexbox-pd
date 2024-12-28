@@ -104,6 +104,7 @@ function Box:destroy()
     pyramid:log(self, tr(customLog) == customLog and tr("log.destroy"):gsub("#", self:name()) or tr(customLog))
     self.destroyed = true
     destroySound:play()
+    pyramid.fx:addDestroyEffect(self.sprite.x, self.sprite.y)
     if self.opened and self.type.onDestroy then self.type.onDestroy(self) end
     if pyramid.cursor:box() == self then infobox:refresh() end
     self:redraw()

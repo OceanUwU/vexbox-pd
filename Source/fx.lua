@@ -8,6 +8,10 @@ function FX:addOpenEffect(x, y)
     table.insert(self.effects, OpenEffect(x, y))
 end
 
+function FX:addDestroyEffect(x, y)
+    table.insert(self.effects, DestroyEffect(x, y))
+end
+
 function FX:update()
     for key, effect in pairs(self.effects) do
         effect:update()
@@ -17,6 +21,7 @@ function FX:update()
         end
     end
 end
+
 
 class("Effect").extends(gfx.sprite)
 
@@ -39,6 +44,7 @@ function Effect:dispose()
     self:remove()
 end
 
+
 class("OpenEffect").extends(Effect)
 
 local openEffectSize<const> = 60
@@ -48,7 +54,7 @@ function OpenEffect:init(x, y)
     self.length = 0.8
 end
 
-function OpenEffect:update(x, y)
+function OpenEffect:update()
     OpenEffect.super.update(self)
 
     local img = gfx.image.new(openEffectSize + 2, openEffectSize + 2)
@@ -67,4 +73,52 @@ function OpenEffect:update(x, y)
 
     gfx.popContext()
     self:setImage(img)
+end
+
+
+class("DestroyEffect").extends(Effect)
+
+local destroyEffectStokes<const> = 30
+local destroyEffectSize<const> = 60
+
+function DestroyEffect:init(x, y)
+    DestroyEffect.super.init(self, x, y)
+    self.length = 1.2
+    self.angle = math.random()
+    self.rotVel = math.random() - 0.5
+end
+
+function DestroyEffect:update()
+    DestroyEffect.super.update(self)
+    self.angle += self.rotVel * delta
+
+    local img = gfx.image.new(destroyEffectSize + 2, destroyEffectSize + 2)
+    gfx.pushContext(img)
+
+    local x = img.width / 2
+    local a = math.sin(self.progress)
+    local r = (1 - math.pow(1 - self.progress, 3)) * openEffectSize / 2
+    local rIn = r * 0.7
+    gfx.setColor(gfx.kColorWhite)
+    gfx.setLineWidth(3)
+    gfx.setDitherPattern(a, gfx.image.kDitherTypeBayer8x8)
+    self:drawSpokes(x, x, r, rIn)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.setLineWidth(1)
+    gfx.setDitherPattern(a, gfx.image.kDitherTypeBayer8x8)
+    self:drawSpokes(x, x, r, rIn)
+
+    gfx.popContext()
+    self:setImage(img)
+end
+
+function DestroyEffect:drawSpokes(x, y, rOut, rIn)
+    for i = 1, destroyEffectStokes, 1 do
+        local isIn = i % 2 == 0
+        local r1 = isIn and rIn or rOut
+        local r2 = isIn and rOut or rIn
+        local a1 = self.angle + i / destroyEffectStokes * math.pi * 2
+        local a2 = self.angle + (i + 1) / destroyEffectStokes * math.pi * 2
+        gfx.drawLine(x + math.cos(a1) * r1, y + math.sin(a1) * r1, x + math.cos(a2) * r2, y + math.sin(a2) * r2)
+    end
 end
