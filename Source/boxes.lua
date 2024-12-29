@@ -61,17 +61,19 @@ boxes = {
 { -- ROW 5
     id = "empty",
 }, {
-    id = "lock",
-}, {
-    id = "key",
-    onOtherBoxOpened = function(self, box, wasRevealed)
-        if box.type.id == "lock" then
-            self:log()
-            pyramid:win()
-        else
-            self:destroy()
+    {
+        id = "lock",
+    }, {
+        id = "key",
+        onOtherBoxOpened = function(self, box, wasRevealed)
+            if box.type.id == "lock" then
+                self:log()
+                pyramid:win()
+            else
+                self:destroy()
+            end
         end
-    end
+}
 }, {
     id = "safeguard",
     onOtherBoxPressed = function(self, box)
