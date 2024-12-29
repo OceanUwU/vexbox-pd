@@ -455,103 +455,109 @@ boxes = {
 },
 
 { -- UNLOCK SET 1
-    id = "empty",
+    id = "cascade",
 }, {
-    id = "empty",
+    id = "butterfly",
 }, {
-    id = "empty",
+    id = "alchemy",
+},
+{
+    {
+        id = "viral",
+    }, {
+        id = "decayed",
+    }, {
+        id = "antidote",
+    }
 }, {
-    id = "empty",
+    id = "trigaze",
 }, {
-    id = "empty",
+    id = "copycat",
 }, {
-    id = "empty",
+    id = "catalogue",
 }, {
-    id = "empty",
-}, {
-    id = "empty",
-}, {
-    id = "empty",
-}, {
-    id = "empty",
+    id = "otherworld",
 },
 
 { -- UNLOCK SET 2
-    id = "empty",
+    id = "searchlight",
 }, {
-    id = "empty",
+    id = "lonely",
 }, {
-    id = "empty",
+    id = "sus",
 }, {
-    id = "empty",
+    id = "book",
 }, {
-    id = "empty",
+    id = "crown",
 }, {
-    id = "empty",
+    id = "stocks",
 }, {
-    id = "empty",
+    id = "shy",
 }, {
-    id = "empty",
+    id = "moth",
 }, {
-    id = "empty",
+    id = "tool",
 }, {
-    id = "empty",
+    id = "rowgold",
 },
 
 { -- UNLOCK SET 3
-    id = "empty",
+    id = "soup",
 }, {
-    id = "empty",
+    id = "brain",
 }, {
-    id = "empty",
+    id = "deserted",
 }, {
-    id = "empty",
+    id = "firework",
 }, {
-    id = "empty",
+    id = "hammer",
 }, {
-    id = "empty",
+    id = "friendly",
 }, {
-    id = "empty",
+    id = "armageddon",
 }, {
-    id = "empty",
+    id = "omniscient",
 }, {
-    id = "empty",
+    id = "ritual",
 }, {
-    id = "empty",
+    id = "puzzle",
 },
 
 { -- UNLOCK SET 4
-    id = "empty",
+    id = "espionage",
 }, {
-    id = "empty",
+    id = "vortex",
 }, {
-    id = "empty",
+    id = "lunar",
 }, {
-    id = "empty",
+    id = "flower",
 }, {
-    id = "empty",
+    id = "speedrun",
 }, {
-    id = "empty",
+    id = "two",
 }, {
-    id = "empty",
+    id = "stamp",
 }, {
-    id = "empty",
+    id = "button",
 }, {
-    id = "empty",
+    id = "ink",
 }, {
-    id = "empty",
+    id = "unstable",
 },
 
 { -- UNLOCK SET 5
-    id = "empty",
+    id = "static",
 }, {
-    id = "empty",
+    id = "blind",
+},
+{
+    {
+        id = "gift",
+    }, {
+        id = "jolly",
+    }
 }, {
-    id = "empty",
-}, {
-    id = "empty",
-}, {
-    id = "empty",
+    id = "glitched",
 }
 
 }
