@@ -126,30 +126,21 @@ function DestroyEffect:update()
     local a = math.sin(self.progress)
     local r = (1 - math.pow(1 - self.progress, 3)) * destroyEffectSize / 2
     local rIn = r * 0.7
-    gfx.setColor(gfx.kColorWhite)
-    gfx.setLineWidth(3)
-    gfx.setDitherPattern(a, gfx.image.kDitherTypeBayer8x8)
-    self:drawSpokes(x, x, r, rIn)
     gfx.setColor(gfx.kColorBlack)
     gfx.setLineWidth(1)
     gfx.setDitherPattern(a, gfx.image.kDitherTypeBayer8x8)
-    self:drawSpokes(x, x, r, rIn)
+    for i = 1, destroyEffectStokes, 1 do
+        local isIn = i % 2 == 0
+        local r1 = isIn and rIn or r
+        local r2 = isIn and r or rIn
+        local a1 = self.angle + i / destroyEffectStokes * math.pi * 2
+        local a2 = self.angle + (i + 1) / destroyEffectStokes * math.pi * 2
+        gfx.drawLine(x + math.cos(a1) * r1, x + math.sin(a1) * r1, x + math.cos(a2) * r2, x + math.sin(a2) * r2)
+    end
 
     gfx.popContext()
     self:setImage(img)
 end
-
-function DestroyEffect:drawSpokes(x, y, rOut, rIn)
-    for i = 1, destroyEffectStokes, 1 do
-        local isIn = i % 2 == 0
-        local r1 = isIn and rIn or rOut
-        local r2 = isIn and rOut or rIn
-        local a1 = self.angle + i / destroyEffectStokes * math.pi * 2
-        local a2 = self.angle + (i + 1) / destroyEffectStokes * math.pi * 2
-        gfx.drawLine(x + math.cos(a1) * r1, y + math.sin(a1) * r1, x + math.cos(a2) * r2, y + math.sin(a2) * r2)
-    end
-end
-
 
 class("RevealEffect").extends(Effect)
 

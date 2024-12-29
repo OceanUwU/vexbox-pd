@@ -175,6 +175,9 @@ function Box:transform(type)
     if self.opened and not self.destroyed then
         pyramid:log(self, tr("log.transform"):gsub("##", oldName):gsub("#", self:name()))
     end
+    if self.revealed then
+        self:prepDrawTransition()
+    end
     self:redraw()
 end
 

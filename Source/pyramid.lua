@@ -63,7 +63,7 @@ function Pyramid:init()
 end
 
 function Pyramid:availableTypes()
-    local newTypes = { table.unpack(boxes, 1, self.numRows * (self.numRows + 1) / 2) }
+    local newTypes = { table.unpack(boxesNoGroups, 1, self.availableBoxes) }
     shuffle(newTypes)
     return newTypes
 end
@@ -75,17 +75,42 @@ function Pyramid:setup()
     self.gold = 0
     self.opened = 0
     self.targetBg = 0
+    self.availableBoxes = 0
+    self.numBoxes = 0
     for i, needed in ipairs(consts.winsNeeded) do
-        if self.totalWins >= needed then self.numRows = i
+        if self.totalWins >= needed then
+            if i <= consts.maxRows then
+                self.numRows = i
+                self.availableBoxes += i
+                self.numBoxes = self.availableBoxes
+            else
+                self.availableBoxes += consts.boxesToUnlock[i - consts.maxRows]
+            end
         else
             self.winsNeeded = needed
             break
         end
     end
     self.playing = true
-    local newTypes = self:availableTypes()
+    local newTypes = { table.unpack(boxes, 1, self.availableBoxes) }
+    local newTypes2 = { }
+    shuffle(newTypes)
+    local skipped = 0
+    for i, type in ipairs(newTypes) do
+        if not type.id then
+            if #newTypes2 + #type <= self.numBoxes then
+                for _, innerType in ipairs(type) do
+                    table.insert(newTypes2, innerType)
+                end
+            end
+        else
+            table.insert(newTypes2, type)
+        end
+        if #newTypes2 >= self.numBoxes then break end
+    end
+    shuffle(newTypes2)
     for i, box in ipairs(self.boxes) do
-        box:reset(newTypes[i])
+        box:reset(newTypes2[i + skipped])
     end
     self:countStats()
     self:repositionBoxes()

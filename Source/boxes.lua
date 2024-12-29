@@ -138,22 +138,24 @@ boxes = {
 },
 
 { -- ROW 7
-    id = "school",
-    n = 3,
-    onOpen = function(self)
-        local boxes = pyramid:getBoxes(function(b) return not b.destroyed and not b.revealed end)
-        shuffle(boxes)
-        for i = 1, self:n() do if boxes[i] then boxes[i]:transform(boxesById.fish) end end
-    end
-}, {
-    id = "fish",
-    n = 3,
-    onOpen = function(self)
-        if #pyramid:getBoxes(function(b) return not b.destroyed and b.opened and b.type.id == "fish" end) >= self:n() then
-            self:log()
-            pyramid:win()
+    {
+        id = "school",
+        n = 3,
+        onOpen = function(self)
+            local boxes = pyramid:getBoxes(function(b) return not b.destroyed and not b.revealed end)
+            shuffle(boxes)
+            for i = 1, self:n() do if boxes[i] then boxes[i]:transform(boxesById.fish) end end
         end
-    end
+    }, {
+        id = "fish",
+        n = 3,
+        onOpen = function(self)
+            if #pyramid:getBoxes(function(b) return not b.destroyed and b.opened and b.type.id == "fish" end) >= self:n() then
+                self:log()
+                pyramid:win()
+            end
+        end
+    }
 }, {
     id = "smartbomb",
     onOpen = function(self)
@@ -192,17 +194,19 @@ boxes = {
 },
 
 { -- ROW 8
-    id = "sword",
-}, {
-    id = "dragon",
-    onOpen = function(self)
-        if pyramid:getBox("sword") then
-            self:log()
-            pyramid:win()
-        else
-            pyramid:lose()
+    {
+        id = "sword",
+    }, {
+        id = "dragon",
+        onOpen = function(self)
+            if pyramid:getBox("sword") then
+                self:log()
+                pyramid:win()
+            else
+                pyramid:lose()
+            end
         end
-    end
+    }
 }, {
     id = "shadow",
     n = 1,
@@ -284,35 +288,37 @@ boxes = {
         for i = 1, self:n2() do if boxes[i] then boxes[i]:transform(boxesById.fairy) end end
     end
 }, {
-    id = "xmarksthespot",
-    onOpen = function(self)
-        local seen = {}
-        local stack = {self}
-        while #stack > 0 do
-            local cur = stack[1]
-            table.remove(stack, 1)
-            if table.indexOfElement(seen, cur) == nil then
-                table.insert(seen, cur)
-                for _, box in ipairs(cur:getAdjacent(1)) do
-                    if not box.destroyed and box.opened then
-                        if box.type.id == "map" then
-                            self:log()
-                            pyramid:win()
-                            return
+    {
+        id = "xmarksthespot",
+        onOpen = function(self)
+            local seen = {}
+            local stack = {self}
+            while #stack > 0 do
+                local cur = stack[1]
+                table.remove(stack, 1)
+                if table.indexOfElement(seen, cur) == nil then
+                    table.insert(seen, cur)
+                    for _, box in ipairs(cur:getAdjacent(1)) do
+                        if not box.destroyed and box.opened then
+                            if box.type.id == "map" then
+                                self:log()
+                                pyramid:win()
+                                return
+                            end
+                            table.insert(stack, 1, box)
                         end
-                        table.insert(stack, 1, box)
                     end
                 end
             end
         end
-    end
-}, {
-    id = "map",
-    onOpen = function(self)
-        for _, b in ipairs(pyramid:getBoxes(function(b) return b.type.id == "xmarksthespot" end)) do
-            b:reveal()
+    }, {
+        id = "map",
+        onOpen = function(self)
+            for _, b in ipairs(pyramid:getBoxes(function(b) return b.type.id == "xmarksthespot" end)) do
+                b:reveal()
+            end
         end
-    end
+    }
 }, {
     id = "sacrifice",
     n = 1,
@@ -411,29 +417,31 @@ boxes = {
         end
     end
 }, {
-    id = "cloak",
-    onOpen = function(self)
-        if pyramid:getBox("cloak") and pyramid:getBox("wand") and pyramid:getBox("hat") then
-            self:log()
-            pyramid:win()
+    {
+        id = "cloak",
+        onOpen = function(self)
+            if pyramid:getBox("cloak") and pyramid:getBox("wand") and pyramid:getBox("hat") then
+                self:log()
+                pyramid:win()
+            end
         end
-    end
-}, {
-    id = "wand",
-    onOpen = function(self)
-        if pyramid:getBox("cloak") and pyramid:getBox("wand") and pyramid:getBox("hat") then
-            self:log()
-            pyramid:win()
+    }, {
+        id = "wand",
+        onOpen = function(self)
+            if pyramid:getBox("cloak") and pyramid:getBox("wand") and pyramid:getBox("hat") then
+                self:log()
+                pyramid:win()
+            end
         end
-    end
-}, {
-    id = "hat",
-    onOpen = function(self)
-        if pyramid:getBox("cloak") and pyramid:getBox("wand") and pyramid:getBox("hat") then
-            self:log()
-            pyramid:win()
+    }, {
+        id = "hat",
+        onOpen = function(self)
+            if pyramid:getBox("cloak") and pyramid:getBox("wand") and pyramid:getBox("hat") then
+                self:log()
+                pyramid:win()
+            end
         end
-    end
+    }
 }, {
     id = "crumbling",
     n = 1,
@@ -442,14 +450,125 @@ boxes = {
         if #boxes > 0 then self:log() end
         for i = 1, self:n() do if boxes[i] then boxes[i]:destroy() end end
     end
+},
+
+{ -- UNLOCK SET 1
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+},
+
+{ -- UNLOCK SET 2
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+},
+
+{ -- UNLOCK SET 3
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+},
+
+{ -- UNLOCK SET 4
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+},
+
+{ -- UNLOCK SET 5
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
+}, {
+    id = "empty",
 }
 
 }
 
 
-
+boxesNoGroups = {}
 boxesById = {}
-for _, type in ipairs(boxes) do
+function initType(type)
     type.icon = loadImg("box/icon/" .. type.id)
     boxesById[type.id] = type
+    table.insert(boxesNoGroups, type)
+end
+
+for _, type in ipairs(boxes) do
+    if type.id then
+        initType(type)
+    else
+        for __, innertype in ipairs(type) do
+            initType(innertype)
+        end
+    end
 end
