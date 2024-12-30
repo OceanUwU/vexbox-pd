@@ -110,7 +110,7 @@ local destroyEffectSize<const> = 60
 
 function DestroyEffect:init(x, y)
     DestroyEffect.super.init(self, x, y)
-    self.length = 1.2
+    self.length = 1.0 + math.random() * 0.4
     self.angle = math.random()
     self.rotVel = math.random() - 0.5
 end
@@ -129,14 +129,19 @@ function DestroyEffect:update()
     gfx.setColor(gfx.kColorBlack)
     gfx.setLineWidth(1)
     gfx.setDitherPattern(a, gfx.image.kDitherTypeBayer8x8)
+    local points = {}
     for i = 1, destroyEffectStokes, 1 do
         local isIn = i % 2 == 0
         local r1 = isIn and rIn or r
         local r2 = isIn and r or rIn
         local a1 = self.angle + i / destroyEffectStokes * math.pi * 2
         local a2 = self.angle + (i + 1) / destroyEffectStokes * math.pi * 2
-        gfx.drawLine(x + math.cos(a1) * r1, x + math.sin(a1) * r1, x + math.cos(a2) * r2, x + math.sin(a2) * r2)
+        table.insert(points, x + math.cos(a1) * r1)
+        table.insert(points, x + math.sin(a1) * r1)
+        table.insert(points, x + math.cos(a2) * r2)
+        table.insert(points, x + math.sin(a2) * r2)
     end
+    gfx.drawPolygon(table.unpack(points))
 
     gfx.popContext()
     self:setImage(img)
@@ -205,4 +210,52 @@ function CoinEffect:update()
     self.realX += self.xVel * delta
     self:moveTo(self.realX, 250 - self.jumpHeight * math.sin(self.progress * math.pi))
     self:setRotation(self.angle)
+end
+
+class("TransformEffect").extends(Effect)
+
+local transformEffectLines<const> = 3
+local transformEffectSize<const> = 70
+
+function TransformEffect:init(x, y)
+    TransformEffect.super.init(self, x, y)
+    self.length = 1.0
+    self.angle = math.random()
+    self.rotVel = 2.0 + math.random() * 1.0
+end
+
+function TransformEffect:update()
+    TransformEffect.super.update(self)
+    self.angle += self.rotVel * delta
+
+    local img = gfx.image.new(transformEffectSize + 2, transformEffectSize + 2)
+    gfx.pushContext(img)
+
+    local x = img.width / 2
+    local a = math.sin(self.progress)
+    local rOut = (1 - math.pow(1 - self.progress, 3)) * transformEffectSize / 2
+    local rIn = math.pow(self.progress, 3) * transformEffectSize / 2
+    gfx.setColor(gfx.kColorBlack)
+    gfx.setLineWidth(1)
+    gfx.setDitherPattern(a, gfx.image.kDitherTypeBayer8x8)
+    self:drawSpokes(x, x, rOut, rIn)
+
+    gfx.popContext()
+    self:setImage(img)
+end
+
+function TransformEffect:drawSpokes(x, y, rOut, rIn)
+    for i = 1, transformEffectLines do
+        local angle = self.angle + i / transformEffectLines * math.pi * 2;
+        local points = {}
+        for i = 0, 4 do
+            local a = angle + math.abs(i - 2) / 2 * 0.9
+            local r = rIn + (rOut - rIn) * i / 4
+            table.insert(points, x + math.cos(a) * r)
+            table.insert(points, y + math.sin(a) * r)
+        end
+        for i = 1, #points - 2, 2 do
+            gfx.drawLine(points[i], points[i + 1], points[i + 2], points[i + 3])
+        end
+    end
 end

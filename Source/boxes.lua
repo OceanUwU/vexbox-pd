@@ -493,12 +493,13 @@ boxes = {
     {
         id = "viral",
         onOtherBoxOpened = function(self, box, wasRevealed)
-            local boxes = self:getAdjacent()
+            local boxes = self:getAdjacent(1, function(b) return not b.destroyed end)
+            if #boxes == 0 then return end
             shuffle(boxes)
             self:transform(boxesById.decayed)
-            boxes[0].opened = true
-            boxes[0].revealed = true
-            boxes[0]:transform(boxesById.viral)
+            boxes[1]:transform(boxesById.viral)
+            boxes[1].opened = true
+            boxes[1].revealed = true
         end
     }, {
         id = "decayed",
@@ -538,18 +539,18 @@ boxes = {
     id = "catalogue",
     onOpen = function(self)
         if self.col > 1 then
-            pyramid.rows[self.col - 1]:reveal()
+            pyramid.rows[self.row][self.col - 1]:reveal()
         end
         if self.col < self.row then
-            pyramid.rows[self.col + 1]:reveal()
+            pyramid.rows[self.row][self.col + 1]:reveal()
         end
     end,
     onOtherBoxOpened = function(self, box, wasRevealed)
-        if self.col > 1 and not pyramid.rows[self.col - 1].destroyed and not pyramid.rows[self.col - 1].opened then
-            pyramid.rows[self.col - 1]:transform()
+        if self.col > 1 and not pyramid.rows[self.row][self.col - 1].destroyed and not pyramid.rows[self.row][self.col - 1].opened then
+            pyramid.rows[self.row][self.col - 1]:transform()
         end
-        if self.col < self.row and not pyramid.rows[self.col + 1].destroyed and not pyramid.rows[self.col + 1].opened then
-            pyramid.rows[self.col + 1]:transform()
+        if self.col < self.row and not pyramid.rows[self.row][self.col + 1].destroyed and not pyramid.rows[self.row][self.col + 1].opened then
+            pyramid.rows[self.row][self.col + 1]:transform()
         end
     end
 }, {
@@ -624,7 +625,7 @@ boxes = {
     end
 }, {
     id = "moth",
-    onOtherBoxOpened = function(self, box, wasRevealed)
+    onOpen = function(self)
         if pyramid.gold <= 0 then
             self:log()
             pyramid:lose()

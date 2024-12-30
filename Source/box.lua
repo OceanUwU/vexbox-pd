@@ -178,6 +178,7 @@ function Box:transform(type)
         pyramid:log(self, tr("log.transform"):gsub("##", oldName):gsub("#", self:name()))
     end
     if self.revealed then
+        pyramid.fx:addEffect(TransformEffect(self.sprite.x, self.sprite.y))
         self:prepDrawTransition()
     end
     self:redraw()
