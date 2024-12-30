@@ -92,7 +92,19 @@ function Pyramid:setup()
         end
     end
     self.playing = true
-    local newTypes = { table.unpack(boxes, 1, self.availableBoxes) }
+    local newTypes = { }
+    local n = 0
+    for _, type in ipairs(boxes) do
+        table.insert(newTypes, type)
+        if type.id then
+            n += 1
+        else
+            n += #type
+        end
+        if n >= self.availableBoxes then
+            break
+        end
+    end
     local newTypes2 = { }
     shuffle(newTypes)
     local skipped = 0
