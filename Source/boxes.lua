@@ -644,10 +644,10 @@ boxes = {
             end
         end
         if self.row < pyramid.numRows then
-            pyramid.rows[self.row - 1][self.col]:transform(boxesById.tape)
-            pyramid.rows[self.row - 1][self.col]:reveal()
-            pyramid.rows[self.row - 1][self.col + 1]:transform(boxesById.tape)
-            pyramid.rows[self.row - 1][self.col + 1]:reveal()
+            pyramid.rows[self.row + 1][self.col]:transform(boxesById.tape)
+            pyramid.rows[self.row + 1][self.col]:reveal()
+            pyramid.rows[self.row + 1][self.col + 1]:transform(boxesById.tape)
+            pyramid.rows[self.row + 1][self.col + 1]:reveal()
         end
     end
 }, {
