@@ -466,6 +466,7 @@ boxes = {
         id = "viral",
     }, {
         id = "decayed",
+        n = 5,
     }, {
         id = "antidote",
     }
@@ -485,14 +486,20 @@ boxes = {
     id = "lonely",
 }, {
     id = "sus",
+    n = 2,
+    n2 = 2,
 }, {
     id = "book",
+    n = 15,
 }, {
     id = "crown",
+    n = 6,
 }, {
     id = "stocks",
+    n = 33,
 }, {
     id = "shy",
+    n = 33,
 }, {
     id = "moth",
 }, {
@@ -507,42 +514,56 @@ boxes = {
     id = "brain",
 }, {
     id = "deserted",
+    n = 10,
 }, {
     id = "firework",
+    n = 4,
 }, {
     id = "hammer",
+    n = 50,
 }, {
     id = "friendly",
 }, {
     id = "armageddon",
+    n = 2,
 }, {
     id = "omniscient",
+    n = 50,
 }, {
     id = "ritual",
+    n = 2,
 }, {
     id = "puzzle",
+    n = 30,
 },
 
 { -- UNLOCK SET 4
     id = "espionage",
+    n = 18,
 }, {
     id = "vortex",
+    n = 2,
 }, {
     id = "lunar",
+    n = 4,
 }, {
     id = "flower",
 }, {
     id = "speedrun",
 }, {
     id = "two",
+    n = 2,
 }, {
     id = "stamp",
+    n = 2,
 }, {
     id = "button",
+    n = 95,
 }, {
     id = "ink",
 }, {
     id = "unstable",
+    n = 20,
 },
 
 { -- UNLOCK SET 5
@@ -553,11 +574,14 @@ boxes = {
 {
     {
         id = "gift",
+        n = 3,
+        n2 = 2,
     }, {
         id = "jolly",
     }
 }, {
     id = "glitched",
+    n = 3,
 }
 
 }
