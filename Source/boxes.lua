@@ -258,7 +258,7 @@ boxes = {
     id = "ghost",
     n = 2,
     onOpen = function(self)
-        local boxes = pyramid:getBoxes(function(b) return not b.destroyed end)
+        local boxes = pyramid:getBoxes(function(b) return self ~= b and not b.destroyed end)
         shuffle(boxes)
         for i = 1, self:n() do if boxes[i] then boxes[i]:transform(boxesById.lose) end end
     end
@@ -500,6 +500,7 @@ boxes = {
             boxes[1]:transform(boxesById.viral)
             boxes[1].opened = true
             boxes[1].revealed = true
+            boxes[1]:reveal()
         end
     }, {
         id = "decayed",
