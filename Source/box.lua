@@ -168,9 +168,11 @@ end
 
 function Box:transform(type)
     if not pyramid.playing or self.destroyed then return end
+    if type == nil then type = pyramid:availableTypes()[1] end
     local oldName = self:name()
     if self.opened and self.type.onTransform then self.type.onTransform(self, type) end
     self.type = type
+    if self.opened and self.type.onTransformInto then self.type.onTransformInto(self) end
     if self.realType then self.realType = nil end
     if self.opened and not self.destroyed then
         pyramid:log(self, tr("log.transform"):gsub("##", oldName):gsub("#", self:name()))

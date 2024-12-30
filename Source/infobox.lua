@@ -82,7 +82,7 @@ function Infobox:realRedraw()
     y += 16 + 3
 
     if pyramid.winsNeeded > 1 then
-        fontSm:drawTextAligned(tr("info.unlock"):gsub("#", pyramid.winsNeeded), self.sprite.width / 2, y, kTextAlignment.center)
+        fontSm:drawTextAligned(tr(pyramid.numRows >= consts.maxRows and "info.unlockboxes" or "info.unlock"):gsub("#", pyramid.winsNeeded), self.sprite.width / 2, y, kTextAlignment.center)
         y += fontSm:getHeight() + 5
     end
 

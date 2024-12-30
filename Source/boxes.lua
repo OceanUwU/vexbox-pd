@@ -20,6 +20,7 @@ boxes = {
         for _, box in pairs(self:getAdjacent(1)) do
             if not box.opened and not box.destroyed then return end
         end
+        self:log()
         pyramid:win()
     end
 }, {
@@ -456,56 +457,212 @@ boxes = {
 
 { -- UNLOCK SET 1
     id = "cascade",
+    onOtherBoxOpened = function (self, box, wasRevealed)
+        if not self:isAdjacent(box, 1) then return end
+        local boxes = self:getAdjacent(1, function(b) return not b.destroyed end)
+        for _, b in ipairs(boxes) do
+            if not b.destroyed and not b.opened then
+                return
+            end
+        end
+        self:destroy()
+        for _, b in ipairs(boxes) do
+            for __, b2 in ipairs(b:getAdjacent(1, function(b3) return not b3.destroyed end)) do
+                b2:reveal()
+            end
+        end
+    end
 }, {
     id = "butterfly",
+    onTransform = function(self)
+        self:log()
+        pyramid:win()
+    end
 }, {
     id = "alchemy",
+    onOtherBoxPressed = function(self, box)
+        if box ~= self and box.revealed then
+            box:transform()
+            self:destroy()
+            return true
+        end
+        return false
+    end
 },
 {
     {
         id = "viral",
+        onOtherBoxOpened = function(self, box, wasRevealed)
+            local boxes = self:getAdjacent()
+            shuffle(boxes)
+            self:transform(boxesById.decayed)
+            boxes[0].opened = true
+            boxes[0].revealed = true
+            boxes[0]:transform(boxesById.viral)
+        end
     }, {
         id = "decayed",
         n = 5,
+        onTransformInto = function(self)
+            if #pyramid:getBoxes(function(b) return not b.destroyed and b.opened and b.type.id == "decayed" end) >= self:n() then
+                self:log()
+                pyramid:lose()
+            end
+        end
     }, {
         id = "antidote",
+        onOpen = function(self)
+            for _, b in pairs(pyramid:getBoxes(function(b) return not b.destroyed and b.opened and (b.type.id == "decayed" or b.type.id == "viral") end)) do
+                b:destroy()
+            end
+        end
     }
 }, {
     id = "trigaze",
+    onOpen = function(self)
+        pyramid.rows[1][1]:reveal()
+        pyramid.rows[pyramid.numRows][1]:reveal()
+        pyramid.rows[pyramid.numRows][#pyramid.rows[pyramid.numRows]]:reveal()
+    end
 }, {
     id = "copycat",
+    onOtherBoxPressed = function(self, box)
+        if box ~= self and box.revealed then
+            self:transform(box.type)
+            self:close()
+            return true
+        end
+        return false
+    end
 }, {
     id = "catalogue",
+    onOpen = function(self)
+        if self.col > 1 then
+            pyramid.rows[self.col - 1]:reveal()
+        end
+        if self.col < self.row then
+            pyramid.rows[self.col + 1]:reveal()
+        end
+    end,
+    onOtherBoxOpened = function(self, box, wasRevealed)
+        if self.col > 1 and not pyramid.rows[self.col - 1].destroyed and not pyramid.rows[self.col - 1].opened then
+            pyramid.rows[self.col - 1]:transform()
+        end
+        if self.col < self.row and not pyramid.rows[self.col + 1].destroyed and not pyramid.rows[self.col + 1].opened then
+            pyramid.rows[self.col + 1]:transform()
+        end
+    end
 }, {
     id = "otherworld",
+    onPress = function(self)
+        self:useFX()
+        for _, box in ipairs(pyramid:getBoxes(function(b) return b.revealed and not b.destroyed end)) do
+            box:transform()
+        end
+    end
 },
 
 { -- UNLOCK SET 2
     id = "searchlight",
+    onOtherBoxOpened = function(self, box, wasRevealed)
+        for _, b in pairs(box:getAdjacent(1)) do b:reveal() end
+        self:destroy()
+    end
 }, {
     id = "lonely",
+    onOtherBoxOpened = function(self, box, wasRevealed)
+        if #box:getAdjacent(1, function(b) return not b.destroyed and b.opened end) == 0 then
+            self:log()
+            pyramid:lose()
+        end
+    end
 }, {
     id = "sus",
     n = 2,
     n2 = 2,
+    onOpen = function(self)
+        local boxes = pyramid:getBoxes(function(b) return not b.destroyed and not b.revealed end)
+        shuffle(boxes)
+        for i = 1, self:n() do if boxes[i] then boxes[i]:transform(boxesById.mimic) end end
+        pyramid:revealRandom(self:n2())
+    end
 }, {
     id = "book",
     n = 15,
+    onOpen = function(self)
+        if #pyramid:getBoxes(function(b) return not b.destroyed and b.opened end) >= self:n() then
+            self:log()
+            pyramid:win()
+        end
+    end
 }, {
     id = "crown",
     n = 6,
+    onPress = function(self) pyramid:spendGold(self:n(), function()
+        self:useFX()
+        self:log()
+        pyramid:win()
+    end) end
 }, {
     id = "stocks",
     n = 33,
+    n2 = 1,
+    onOtherBoxOpened = function(self, box, wasRevealed)
+        if math.random() * 100 < self:n() then
+            self:log()
+            pyramid.fx:addEffect(OpenEffect(self.sprite.x, self.sprite.y))
+            pyramid:gainGold(self:n2())
+        end
+    end
 }, {
     id = "shy",
     n = 33,
+    onOtherBoxOpened = function(self, box, wasRevealed)
+        if math.random() * 100 < self:n() then
+            self:close()
+        end
+    end
 }, {
     id = "moth",
+    onOtherBoxOpened = function(self, box, wasRevealed)
+        if pyramid.gold <= 0 then
+            self:log()
+            pyramid:lose()
+        end
+    end
 }, {
     id = "tool",
+    onOpen = function(self)
+        if self.row > 1 then
+            if self.col > 1 then
+                pyramid.rows[self.row - 1][self.col - 1]:transform(boxesById.demo)
+                pyramid.rows[self.row - 1][self.col - 1]:reveal()
+            end
+            if self.col < self.row then
+                pyramid.rows[self.row - 1][self.col]:transform(boxesById.demo)
+                pyramid.rows[self.row - 1][self.col]:reveal()
+            end
+        end
+        if self.row < pyramid.numRows then
+            pyramid.rows[self.row - 1][self.col]:transform(boxesById.tape)
+            pyramid.rows[self.row - 1][self.col]:reveal()
+            pyramid.rows[self.row - 1][self.col + 1]:transform(boxesById.tape)
+            pyramid.rows[self.row - 1][self.col + 1]:reveal()
+        end
+    end
 }, {
     id = "rowgold",
+    onOpen = function(self)
+        local g = 0
+        for _, box in ipairs(pyramid.rows[self.row]) do
+            if box ~= self and box.opened and not box.destroyed then
+                g += 1
+            end
+        end
+        if g > 0 then
+            pyramid:gainGold(g)
+        end
+    end
 },
 
 { -- UNLOCK SET 3
