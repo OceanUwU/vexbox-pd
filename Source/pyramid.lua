@@ -242,6 +242,7 @@ function Pyramid:lose()
 end
 
 function Pyramid:internalWin()
+    if not self.playing then return end
     local curse = self:getBox("curse")
     if curse then
         curse:log()
@@ -260,6 +261,7 @@ function Pyramid:internalWin()
 end
 
 function Pyramid:internalLose()
+    if not self.playing then return end
     local life = self:getBox("life")
     if life then
         life:log()

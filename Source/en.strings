@@ -192,7 +192,7 @@
 "box.antidote.n"="Antidote Box"
 "box.antidote.d"="On Open: Destroy all open Viral and Decayed Boxes."
 "box.trigaze.n"="Tri-gaze Box"
-"box.trigaze.d"="On Open: Reveal the top row and the left and rightmost boxes in the bottom row."
+"box.trigaze.d"="On Open: Reveal the corner boxes."
 "box.copycat.n"="Copycat Box"
 "box.copycat.d"="The next time you press another revealed box, this transforms into it and closes itself."
 "box.catalogue.n"="Box Catalog"
