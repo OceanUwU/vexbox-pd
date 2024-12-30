@@ -28,7 +28,7 @@ boxes = {
     onDestroy = function(self) pyramid:win() end
 }, {
     id = "bomb",
-    onOtherBoxOpened = function(self, box, wasRevealed)
+    onOtherBoxOpened = function(self, box)
         self:log()
         self:destroy()
         for _, b in pairs(self:getAdjacent(1)) do b:destroy() end
@@ -66,7 +66,7 @@ boxes = {
         id = "lock",
     }, {
         id = "key",
-        onOtherBoxOpened = function(self, box, wasRevealed)
+        onOtherBoxOpened = function(self, box)
             if box.type.id == "lock" then
                 self:log()
                 pyramid:win()
@@ -111,7 +111,7 @@ boxes = {
 }, {
     id = "heartbreak",
     n = 10,
-    onOtherBoxOpened = function(self, box, wasRevealed)
+    onOtherBoxOpened = function(self, box)
         if math.random() * 100 < self:n() then
             self:log()
             pyramid:lose()
@@ -129,7 +129,7 @@ boxes = {
     onDestroy = function(self) pyramid:lose() end
 }, {
     id = "rowbomb",
-    onOtherBoxOpened = function(self, box, wasRevealed)
+    onOtherBoxOpened = function(self, box)
         if box.row == self.row then
             self:log()
             self:destroy()
@@ -164,7 +164,7 @@ boxes = {
     onOpen = function(self)
         for _, b in pairs(self:getAdjacent(1)) do b:reveal() end
     end,
-    onOtherBoxOpened = function(self, box, wasRevealed)
+    onOtherBoxOpened = function(self, box)
         self:log()
         self:destroy()
         for _, b in pairs(self:getAdjacent(1)) do b:destroy() end
@@ -225,7 +225,7 @@ boxes = {
 }, {
     id = "mine",
     n = 1,
-    onOtherBoxOpened = function(self, box, wasRevealed)
+    onOtherBoxOpened = function(self, box)
         if self:isAdjacent(box, 1) then
             self:log()
             pyramid:gainGold(self:n())
@@ -375,8 +375,8 @@ boxes = {
 }, {
     id = "checkbox",
     n = 1,
-    onOtherBoxOpened = function(self, box, wasRevealed)
-        if not wasRevealed then pyramid:revealRandom(self:n()) end
+    onOtherBoxOpened = function(self, box)
+        if not box.wasRevealed then pyramid:revealRandom(self:n()) end
     end
 }, {
     id = "police",
@@ -448,7 +448,7 @@ boxes = {
 }, {
     id = "crumbling",
     n = 1,
-    onOtherBoxOpened = function(self, box, wasRevealed)
+    onOtherBoxOpened = function(self, box)
         local boxes = pyramid:getBoxes(function(b) return not b.destroyed end)
         if #boxes > 0 then self:log() end
         for i = 1, self:n() do if boxes[i] then boxes[i]:destroy() end end
@@ -457,7 +457,7 @@ boxes = {
 
 { -- UNLOCK SET 1
     id = "cascade",
-    onOtherBoxOpened = function (self, box, wasRevealed)
+    onOtherBoxOpened = function (self, box)
         if not self:isAdjacent(box, 1) then return end
         local boxes = self:getAdjacent(1, function(b) return not b.destroyed end)
         for _, b in ipairs(boxes) do
@@ -492,7 +492,8 @@ boxes = {
 {
     {
         id = "viral",
-        onOtherBoxOpened = function(self, box, wasRevealed)
+        onOtherBoxOpened = function(self, box)
+            if self.justTransformed then return end
             local boxes = self:getAdjacent(1, function(b) return not b.destroyed end)
             if #boxes == 0 then return end
             shuffle(boxes)
@@ -545,7 +546,7 @@ boxes = {
             pyramid.rows[self.row][self.col + 1]:reveal()
         end
     end,
-    onOtherBoxOpened = function(self, box, wasRevealed)
+    onOtherBoxOpened = function(self, box)
         if self.col > 1 and not pyramid.rows[self.row][self.col - 1].destroyed and not pyramid.rows[self.row][self.col - 1].opened then
             pyramid.rows[self.row][self.col - 1]:transform()
         end
@@ -565,13 +566,13 @@ boxes = {
 
 { -- UNLOCK SET 2
     id = "searchlight",
-    onOtherBoxOpened = function(self, box, wasRevealed)
+    onOtherBoxOpened = function(self, box)
         for _, b in pairs(box:getAdjacent(1)) do b:reveal() end
         self:destroy()
     end
 }, {
     id = "lonely",
-    onOtherBoxOpened = function(self, box, wasRevealed)
+    onOtherBoxOpened = function(self, box)
         if #box:getAdjacent(1, function(b) return not b.destroyed and b.opened end) == 0 then
             self:log()
             pyramid:lose()
@@ -608,7 +609,7 @@ boxes = {
     id = "stocks",
     n = 33,
     n2 = 1,
-    onOtherBoxOpened = function(self, box, wasRevealed)
+    onOtherBoxOpened = function(self, box)
         if math.random() * 100 < self:n() then
             self:log()
             pyramid.fx:addEffect(OpenEffect(self.sprite.x, self.sprite.y))
@@ -618,7 +619,7 @@ boxes = {
 }, {
     id = "shy",
     n = 33,
-    onOtherBoxOpened = function(self, box, wasRevealed)
+    onOtherBoxOpened = function(self, box)
         if math.random() * 100 < self:n() then
             self:close()
         end

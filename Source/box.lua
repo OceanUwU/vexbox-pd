@@ -28,6 +28,8 @@ function Box:reset(newType)
     end
     self.type = newType
     self.realType = nil
+    self.wasRevealed = false
+    self.justTransformed = false
     self.revealed = false
     self.opened = false
     self.destroyed = false
@@ -65,6 +67,7 @@ function Box:redraw()
 end
 
 function Box:update()
+    self.justTransformed = false
     if self.transitionProgress then
         self.transitionProgress -= 6.0 * delta
         if self.transitionProgress < 0.05 then
@@ -97,7 +100,7 @@ function Box:open()
         self.type = self.realType
         self.realType = nil
     end
-    local wasRevealed = self.revealed
+    self.wasRevealed = self.revealed
     self.opened = true
     self.revealed = true
     openSound:play()
@@ -108,7 +111,7 @@ function Box:open()
     self:prepDrawTransition()
     self:redraw()
     for _, box in pairs(pyramid:getBoxes()) do
-        if box ~= self then box:otherBoxOpened(self, wasRevealed) end
+        if box ~= self then box:otherBoxOpened(self) end
     end
     pyramid:countStats()
 end
@@ -170,6 +173,7 @@ function Box:transform(type)
     if not pyramid.playing or self.destroyed then return end
     if type == nil then type = pyramid:availableTypes()[1] end
     local oldName = self:name()
+    self.justTransformed = true
     if self.opened and self.type.onTransform then self.type.onTransform(self, type) end
     self.type = type
     if self.opened and self.type.onTransformInto then self.type.onTransformInto(self) end
@@ -200,9 +204,9 @@ function Box:useFX()
     pyramid.fx:addEffect(OpenEffect(self.sprite.x, self.sprite.y))
 end
 
-function Box:otherBoxOpened(box, wasRevealed)
+function Box:otherBoxOpened(box)
     if not pyramid.playing or not self.opened or self.destroyed then return end
-    if self.type.onOtherBoxOpened then self.type.onOtherBoxOpened(self, box, wasRevealed) end
+    if self.type.onOtherBoxOpened then self.type.onOtherBoxOpened(self, box) end
 end
 
 function Box:otherBoxPressed(box)
