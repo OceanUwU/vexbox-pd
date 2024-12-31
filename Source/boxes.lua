@@ -670,8 +670,22 @@ boxes = {
 
 { -- UNLOCK SET 3
     id = "soup",
+    onOpen = function(self)
+        local availableBoxes = pyramid:getBoxes(function(b) return not self:isAdjacent(b, 1) end)
+        shuffle(availableBoxes)
+        for _, box in ipairs(self:getAdjacent(1)) do
+            availableBoxes[1]:transform(box.type)
+        end
+    end
 }, {
     id = "brain",
+    onOtherBoxOpened = function(self, box)
+        local boxes = self:getAdjacent(1, function (b) return not b.revealed and not b.destroyed end)
+        shuffle(boxes)
+        if #boxes > 0 then
+            boxes[1]:reveal()
+        end
+    end
 }, {
     id = "deserted",
     n = 10,
