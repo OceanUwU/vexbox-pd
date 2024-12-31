@@ -121,6 +121,16 @@ function Pyramid:setup()
         if #newTypes2 >= self.numBoxes then break end
     end
     shuffle(newTypes2)
+    --[[
+    for i, t in ipairs({ --test boxes
+        "music",
+        "music",
+        "demo",
+        "demo"
+    }) do
+        newTypes2[i] = boxesById[t]
+    end
+    --]]
     for i, box in ipairs(self.boxes) do
         box:reset(newTypes2[i + skipped])
     end
