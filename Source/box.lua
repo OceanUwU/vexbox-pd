@@ -150,7 +150,10 @@ function Box:reveal()
     if self.type.preReveal then self.type.preReveal(self) end
     self.revealed = true
     pyramid:countStats()
-    revealSound:play()
+    local offset = revealSound:getOffset()
+    if offset > 0.05 or offset == 0 then
+        revealSound:play()
+    end
     pyramid.fx:addEffect(RevealEffect(self.sprite.x, self.sprite.y))
     local customLog = "box."..self.type.id..".reveal"
     pyramid:log(self, tr(customLog) == customLog and tr("log.reveal"):gsub("#", self:name()) or tr(customLog))
@@ -164,7 +167,10 @@ function Box:destroy()
     pyramid:log(self, tr(customLog) == customLog and tr("log.destroy"):gsub("#", self:name()) or tr(customLog))
     self.destroyed = true
     pyramid:countStats()
-    destroySound:play()
+    local offset = destroySound:getOffset()
+    if offset > 0.05 or offset == 0 then
+        destroySound:play()
+    end
     pyramid.fx:addEffect(DestroyEffect(self.sprite.x, self.sprite.y))
     if self.opened and self.type.onDestroy then self.type.onDestroy(self) end
     if pyramid.cursor:box() == self then infobox:refresh() end
