@@ -265,7 +265,7 @@
 "box.two.d"="Press A: If # adjacent boxes are the same, win."
 "box.two.log"="Wielded the power of 2!"
 "box.stamp.n"="Stamp Box"
-"box.stamp.d"="The next time you press a revealed box, transform # random boxes into it and destroy this."
+"box.stamp.d"="The next time you press an open box, transform # random boxes into it and destroy this."
 "box.button.n"="Button Box"
 "box.button.d"="Press A: #% chance to transform and reveal a random adjacent box. Otherwise, lose."
 "box.button.log"="I wonder what's that red button do?"
