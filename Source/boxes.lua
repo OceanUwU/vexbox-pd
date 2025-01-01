@@ -191,6 +191,7 @@ boxes = {
 }, {
     id = "music",
     onOpen = function(self) musicPlayer:play(0) end,
+    onTransformInto = function(self) self.type.onOpen(self) end,
     onDestroy = function(self)
         if #pyramid:getBoxes(function(b) return b ~= self and b.type.id == "music" and not b.destroyed and b.opened end) == 0 then
             musicPlayer:stop()

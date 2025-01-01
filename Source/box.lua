@@ -11,6 +11,7 @@ local destroySound<const> = loadSound("destroy")
 local openSound<const> = loadSound("open")
 local revealSound<const> = loadSound("reveal")
 local useSound<const> = loadSound("use")
+local pulseGap<const> = 2.0
 
 function Box:init(row, col)
     self.row = row
@@ -33,6 +34,7 @@ function Box:reset(newType)
     self.revealed = false
     self.opened = false
     self.destroyed = false
+    self.openedTime = 0
     if newType ~= nil then self:redraw() end
 end
 
@@ -92,6 +94,13 @@ function Box:update()
         end
         self.sprite:setScale(self.scale)
     end
+    if self.type and self.type.onOtherBoxPressed and self.opened and not self.destroyed and pyramid.playing then
+        self.openedTime += delta
+        if self.openedTime >= pulseGap then
+            self.openedTime -= pulseGap
+            pyramid.fx:addEffect(OpenEffect(self.sprite.x, self.sprite.y))
+        end
+    end
 end
 
 function Box:open()
@@ -106,6 +115,7 @@ function Box:open()
     self.wasRevealed = self.revealed
     self.opened = true
     self.revealed = true
+    self.openedTime = 0
     pyramid:countStats()
     openSound:play()
     pyramid.fx:addEffect(OpenEffect(self.sprite.x, self.sprite.y))

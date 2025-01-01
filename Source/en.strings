@@ -50,7 +50,7 @@
 "box.lock.d"="Perhaps something could open this..."
 "box.key.n"="Key Box"
 "box.key.d"="If the next box you open is locked, win. Otherwise, destroys itself."
-"box.key.log"="The Lockbox was unlocked!"
+"box.key.log"="Lockbox was unlocked!"
 "box.revival.n"="Halo box"
 "box.revival.d"="On Open: Revive # random destroyed boxes and close them."
 "box.revival.open"="Reviving..."

@@ -105,7 +105,7 @@ end
 
 class("DestroyEffect").extends(Effect)
 
-local destroyEffectStokes<const> = 24
+local destroyEffectStokes<const> = 14
 local destroyEffectSize<const> = 60
 
 function DestroyEffect:init(x, y)
@@ -125,12 +125,12 @@ function DestroyEffect:update()
     local x = img.width / 2
     local a = math.sin(self.progress)
     local r = (1 - math.pow(1 - self.progress, 3)) * destroyEffectSize / 2
-    local rIn = r * 0.7
+    local rIn = r * 0.6
     gfx.setColor(gfx.kColorBlack)
     gfx.setLineWidth(1)
     gfx.setDitherPattern(a, gfx.image.kDitherTypeBayer8x8)
     local points = {}
-    for i = 1, destroyEffectStokes, 1 do
+    for i = 1, destroyEffectStokes, 2 do
         local isIn = i % 2 == 0
         local r1 = isIn and rIn or r
         local r2 = isIn and r or rIn
