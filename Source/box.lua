@@ -190,7 +190,10 @@ end
 
 function Box:transform(type)
     if not pyramid.playing or self.destroyed then return end
-    if type == nil then type = pyramid:availableTypes()[1] end
+    if type == nil then
+        local types = pyramid:availableTypes()
+        type = types[types[1] == self.type and 2 or 1]
+    end
     local oldName = self:name()
     for _, box in pairs(pyramid:getBoxes()) do
         if box ~= self then
@@ -205,7 +208,7 @@ function Box:transform(type)
     self.type = type
     if self.opened and self.type.onTransformInto then self.type.onTransformInto(self) end
     if self.realType then self.realType = nil end
-    if self.opened and not self.destroyed then
+    if self.revealed and not self.destroyed then
         pyramid:log(self, tr("log.transform"):gsub("##", oldName):gsub("#", self:name()))
     end
     if self.revealed then
