@@ -208,7 +208,7 @@
 "box.sus.d"="On Open: Transform # random unrevealed boxes into Box Mimics and reveal ## random boxes."
 "box.book.n"="Book Box"
 "box.book.d"="On Open: If # or more boxes are open, win."
-"bok.book.log"="Well read!"
+"box.book.log"="Well read!"
 "box.crown.n"="Crown Box"
 "box.crown.d"="Press A: Spend # Gold to win."
 "box.crown.log"="Pay to win!"

@@ -245,7 +245,7 @@ function Box:preOtherBoxOpened(box)
 end
 
 function Box:otherBoxOpened(box)
-    if not self.type.onOtherBoxOpened or not pyramid.playing or not self.opened or self.destroyed then return end
+    if not self.type.onOtherBoxOpened or self.justTransformed or not pyramid.playing or not self.opened or self.destroyed then return end
     self.type.onOtherBoxOpened(self, box)
 end
 
@@ -265,12 +265,12 @@ function Box:preOtherBoxTransformed(box, type)
 end
 
 function Box:otherBoxTransformed(box)
-    if not self.type.onOtherBoxTransformed or not pyramid.playing or not self.opened or self.destroyed then return end
+    if not self.type.onOtherBoxTransformed or self.justTransformed or not pyramid.playing or not self.opened or self.destroyed then return end
     self.type.onOtherBoxTransformed(self, box, oldType)
 end
 
 function Box:otherBoxDestroyed(box)
-    if not self.type.onOtherBoxDestroyed or not pyramid.playing or not self.opened or self.destroyed then return end
+    if not self.type.onOtherBoxDestroyed or self.justTransformed or not pyramid.playing or not self.opened or self.destroyed then return end
     self.type.onOtherBoxDestroyed(self, box)
 end
 

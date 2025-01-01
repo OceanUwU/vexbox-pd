@@ -255,7 +255,7 @@ boxes = {
             self:log()
             pyramid:win()
         end
-        local boxes = pyramid:getBoxes(function(b) return not b.destroyed and b.row == self.row + 1 end)
+        local boxes = pyramid:getBoxes(function(b) return b.type.id ~= "waterfall" and not b.destroyed and b.row == self.row + 1 end)
         shuffle(boxes)
         for i = 1, self:n() do if boxes[i] then boxes[i]:transform(boxesById.waterfall) end end
     end
@@ -498,7 +498,6 @@ boxes = {
     {
         id = "viral",
         onOtherBoxOpened = function(self, box)
-            if self.justTransformed then return end
             local boxes = self:getAdjacent(1, function(b) return not b.destroyed end)
             if #boxes == 0 then return end
             shuffle(boxes)
