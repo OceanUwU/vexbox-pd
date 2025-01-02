@@ -138,10 +138,6 @@ function Pyramid:setup()
         newTypes2[i] = boxesById[t]
     end
     --]]
-    newTypes2[13] = boxesById.reveal
-    newTypes2[16] = boxesById.demo
-    newTypes2[24] = boxesById.win
-    newTypes2[41] = boxesById.lose
     for i, box in ipairs(self.boxes) do
         box:reset(newTypes2[i + skipped])
     end

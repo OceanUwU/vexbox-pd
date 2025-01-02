@@ -136,7 +136,7 @@
 "box.sacrifice.d"="Press A: Destroy a random box, then reveal a random box."
 "box.3d.n"="Gogglebox"
 "box.3d.d"="On Open: Reveal # random other boxes."
-"box.3d.d"="Eye see Z..."
+"box.3d.log"="Eye see Z..."
 "box.rowreveal.n"="Horeyezon Box"
 "box.rowreveal.d"="On Open: Reveal all boxes in this row."
 "box.rowreveal.open"="Eye rowveal all..."

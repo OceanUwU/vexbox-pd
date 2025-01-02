@@ -3,6 +3,6 @@ author=ocean & Vex
 description=game where you open boxes
 bundleID=lol.ocean.vexboxpd
 version=0.1.1
-buildNumber=6
+buildNumber=7
 imagePath=assets/launcher
 launchSoundPath=assets/sfx/open.wav

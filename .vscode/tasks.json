@@ -13,7 +13,7 @@
         },
         {
             "type": "shell",
-            "command": "zip -r Vexbox.pdx.zip Vexbox.pdx",
+            "command": "[ -f Vexbox.pdx.zip ] && rm Vexbox.pdx.zip; zip -r Vexbox.pdx.zip Vexbox.pdx",
             "label": "Playdate: Zip up"
         },
         {
