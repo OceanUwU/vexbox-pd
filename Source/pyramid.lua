@@ -19,10 +19,17 @@ function Pyramid:init()
     self.totalWins = 0
     self.streak = 0
     local gameData = pd.datastore.read()
+    local inverted = false
     if gameData then
         self.totalWins = gameData.w
         self.streak = gameData.s
+        inverted = gameData.i
     end
+    pd.display.setInverted(inverted)
+    pd.getSystemMenu():addCheckmarkMenuItem(tr("menuitem.invert"), inverted, function(nowInverted)
+        pd.display.setInverted(nowInverted)
+        self:save()
+    end)
 
     self.bg = gfx.sprite.new()
     self.bg:setSize(400, 240)
@@ -308,7 +315,7 @@ function Pyramid:destroyStreak()
 end
 
 function Pyramid:save()
-    pd.datastore.write({ w = self.totalWins, s = self.streak })
+    pd.datastore.write({ w = self.totalWins, s = self.streak, i = pd.display.getInverted() })
 end
 
 function Pyramid:gainGold(amount)
