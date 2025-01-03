@@ -141,6 +141,8 @@ function Pyramid:setup()
     --]]
     newTypes2[1] = boxesById.demo
     newTypes2[2] = boxesById.aid
+    newTypes2[3] = boxesById.music
+    newTypes2[4] = boxesById.tape
     for i, box in ipairs(self.boxes) do
         box:reset(newTypes2[i + skipped])
     end
@@ -157,11 +159,9 @@ function Pyramid:countStats()
     self.destroyed = 0
     for _, box in ipairs(self.boxes) do
         if box.row > self.numRows then return end
-        if box.destroyed then self.destroyed += 1
-        elseif box.revealed then
-            self.revealed += 1
-            if box.opened then self.opened += 1 end
-        end
+        if box.revealed then self.revealed += 1 end
+        if box.opened then self.opened += 1
+        elseif box.destroyed then self.destroyed += 1 end
     end
 end
 

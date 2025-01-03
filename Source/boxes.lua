@@ -198,7 +198,11 @@ boxes = {
     id = "curse",
 }, {
     id = "music",
-    onOpen = function(self) musicPlayer:play(0) end,
+    onOpen = function(self)
+        if musicPlayer:didUnderrun() then
+            musicPlayer:stop()
+        end
+        musicPlayer:play(0) end,
     onTransformInto = function(self) self.type.onOpen(self) end,
     onDestroy = function(self)
         if #pyramid:getBoxes(function(b) return b ~= self and b.type.id == "music" and not b.destroyed and b.opened end) == 0 then

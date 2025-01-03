@@ -60,7 +60,7 @@ function Box:redraw()
     
     local icon = self.revealed and self.type.icon or unknownImg
     icon:draw(borderSize, borderSize)
-    if self.revealed and not self.opened then revealedOverlay:draw(borderSize, borderSize) end
+    if self.revealed and not (self.opened or self.destroyed) then revealedOverlay:draw(borderSize, borderSize) end
     if self.transitionProgress then img = self.oldImg:blendWithImage(img, self.transitionProgress, gfx.image.kDitherTypeBayer8x8) end
     --end
 
@@ -169,6 +169,7 @@ function Box:destroy()
     if not pyramid.playing or self.destroyed then return end
     local customLog = self.revealed and ("box."..self.type.id..".destroy") or ""
     pyramid:log(self, tr(customLog) == customLog and tr("log.destroy"):gsub("#", self:name()) or tr(customLog))
+    local wasOpen = self.opened
     self.destroyed = true
     self.opened = false
     pyramid:countStats()
@@ -177,7 +178,7 @@ function Box:destroy()
         destroySound:play()
     end
     pyramid.fx:addEffect(DestroyEffect(self.sprite.x, self.sprite.y))
-    if self.opened and self.type.onDestroy then self.type.onDestroy(self) end
+    if wasOpen and self.type.onDestroy then self.type.onDestroy(self) end
     if pyramid.cursor:box() == self then infobox:refresh() end
     self:prepDrawTransition()
     self:redraw()
