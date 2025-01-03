@@ -139,10 +139,6 @@ function Pyramid:setup()
         newTypes2[i] = boxesById[t]
     end
     --]]
-    newTypes2[1] = boxesById.demo
-    newTypes2[2] = boxesById.aid
-    newTypes2[3] = boxesById.music
-    newTypes2[4] = boxesById.tape
     for i, box in ipairs(self.boxes) do
         box:reset(newTypes2[i + skipped])
     end

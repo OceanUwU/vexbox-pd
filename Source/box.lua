@@ -201,7 +201,7 @@ function Box:close()
 end
 
 function Box:transform(type)
-    if not pyramid.playing or self.destroyed then return end
+    if not pyramid.playing then return end
     if type == nil then
         local types = pyramid:availableTypes()
         type = types[types[1] == self.type and 2 or 1]

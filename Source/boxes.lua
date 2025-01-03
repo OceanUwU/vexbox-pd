@@ -288,7 +288,7 @@ boxes = {
         local shouldReveal = false
         for _, b in pairs(self:getAdjacent(1)) do
             b:transform(type)
-            if b.revealed and not b.destroyed then shouldReveal = true end
+            if b.revealed then shouldReveal = true end
         end
         if shouldReveal then
             for _, b in pairs(self:getAdjacent(1)) do b:reveal() end
@@ -573,7 +573,7 @@ boxes = {
     id = "otherworld",
     onPress = function(self)
         self:useFX()
-        for _, box in ipairs(pyramid:getBoxes(function(b) return b.revealed and not b.destroyed end)) do
+        for _, box in ipairs(pyramid:getBoxes(function(b) return b.revealed end)) do
             box:transform()
         end
     end
@@ -686,7 +686,7 @@ boxes = {
 { -- UNLOCK SET 3
     id = "soup",
     onOpen = function(self)
-        local availableBoxes = pyramid:getBoxes(function(b) return not self:isAdjacent(b, 1) end)
+        local availableBoxes = pyramid:getBoxes(function(b) return not b.destroyed and not self:isAdjacent(b, 1) end)
         shuffle(availableBoxes)
         for i, box in ipairs(self:getAdjacent(1)) do
             if #availableBoxes >= i then
