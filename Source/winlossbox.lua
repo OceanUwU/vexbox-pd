@@ -70,6 +70,7 @@ function WinLossBox:update()
         self.restartSprite:moveTo(restartPos, y + (self.inverted and (-restartPos - self.sprite.height) or restartPos))
         self.restartButtonSprite:moveTo(self.restartSprite.x, self.restartSprite.y)
         if self.showTime >= showTime then
+            self.inverted = pyramid.inverted
             self.shown = self.showing
             self.sprite:setVisible(self.shown)
         end
