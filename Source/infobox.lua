@@ -9,6 +9,7 @@ local openedImg<const> = loadImg("stats/opened")
 local revealedImg<const> = loadImg("stats/revealed")
 local destroyedImg<const> = loadImg("stats/destroyed")
 local drawnDescs<const> = {}
+drawnDescs[""] = gfx.image.new(1, 1)
 
 function Infobox:init()
     self.sprite = gfx.sprite.new()
@@ -38,7 +39,7 @@ function Infobox:realRedraw()
         drawnDescs[self.description] = descImg
     end
     local height = 6 + 20 + 5 + descImg.height + 5 + 16 + 3 + 16 + 3
-    if not self.opened then height += fontSm:getHeight() + 3 end
+    if self.destroyed or not self.opened then height += fontSm:getHeight() + 3 end
     if pyramid.winsNeeded > 1 then height += fontSm:getHeight() + 5 end
     gfx.setLineWidth(1)
     gfx.setColor(gfx.kColorWhite)
@@ -54,7 +55,10 @@ function Infobox:realRedraw()
     if self.icon then self.icon:draw(math.floor(iconX+0.5) + 1, y + 1) end
     y += 20 + 5
 
-    if not self.opened then
+    if self.destroyed then
+        fontSm:drawTextAligned(tr("info.destroyed"), self.sprite.width / 2, y, kTextAlignment.center)
+        y += fontSm:getHeight() + 3
+    elseif not self.opened then
         fontSm:drawTextAligned(tr("info.unopened"), self.sprite.width / 2, y, kTextAlignment.center)
         y += fontSm:getHeight() + 3
     end
@@ -98,10 +102,14 @@ function Infobox:refresh()
         self.title = newTitle
         self.description = newDesc
         self.icon = box:displayIcon()
-        self.opened = box.destroyed or not box.revealed or box.opened
+        self.opened = box.opened
+        self.destroyed = box.destroyed
     else
-        if self.opened ~= (box.destroyed or not box.revealed or box.opened) then
-            self.opened = box.destroyed or not box.revealed or box.opened
+        if self.destroyed ~= box.destroyed then
+            self.destroyed = box.destroyed
+        end
+        if self.opened ~= box.opened then
+            self.opened = box.opened
         end
     end
     self:redraw()

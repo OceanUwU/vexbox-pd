@@ -2,6 +2,7 @@ class("Box").extends()
 
 local unknownImg<const> = loadImg("box/icon-unknown")
 local revealedOverlay<const> = loadImg("box/revealed")
+local destroyedMask<const> = loadImg("box/destroyed")
 local borderImages<const> = { closed = loadImg("box/border/closed"), revealed = loadImg("box/border/revealed"), open = loadImg("box/border/open") }
 local borderSize<const> = 2
 local emptyIcon<const> = gfx.image.new(consts.boxSize - borderSize * 2, consts.boxSize - borderSize * 2)
@@ -24,7 +25,7 @@ function Box:init(row, col)
 end
 
 function Box:reset(newType)
-    if self.type and not self.destroyed and (self.revealed or self.opened) then
+    if self.type and (self.revealed or self.opened or self.destroyed) then
         self:prepDrawTransition()
     end
     self.type = newType
@@ -50,22 +51,25 @@ function Box:redraw()
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRect(0, 0, consts.boxSize, consts.boxSize)
     gfx.setColor(gfx.kColorBlack)
-    if not self.destroyed then
-        local border
-        if self.opened then border = borderImages.open
-        elseif self.revealed then border = borderImages.revealed
-        else border = borderImages.closed end
-        border:draw(0, 0)
-        
-        local icon = self.revealed and self.type.icon or unknownImg
-        icon:draw(borderSize, borderSize)
-        if self.revealed and not self.opened then revealedOverlay:draw(borderSize, borderSize) end
-        if self.transitionProgress then img = self.oldImg:blendWithImage(img, self.transitionProgress, gfx.image.kDitherTypeBayer8x8) end
-    end
+    --if not self.destroyed then
+    local border
+    if self.opened then border = borderImages.open
+    elseif self.revealed then border = borderImages.revealed
+    else border = borderImages.closed end
+    border:draw(0, 0)
+    
+    local icon = self.revealed and self.type.icon or unknownImg
+    icon:draw(borderSize, borderSize)
+    if self.revealed and not self.opened then revealedOverlay:draw(borderSize, borderSize) end
+    if self.transitionProgress then img = self.oldImg:blendWithImage(img, self.transitionProgress, gfx.image.kDitherTypeBayer8x8) end
+    --end
 
     gfx.popContext()
+    if self.destroyed then
+        img:setMaskImage(destroyedMask)
+    end
     self.sprite:setImage(img)
-    self.sprite:setVisible(not self.destroyed and self.row <= pyramid.numRows)
+    self.sprite:setVisible(self.row <= pyramid.numRows)
 end
 
 function Box:update()
@@ -130,7 +134,7 @@ function Box:open()
 end
 
 function Box:press()
-    if not pyramid.playing or self.destroyed then return false end
+    if not pyramid.playing then return false end
     for _, box in pairs(pyramid:getBoxes()) do
         if box:otherBoxPressed(self) then return true end
     end
@@ -166,6 +170,7 @@ function Box:destroy()
     local customLog = self.revealed and ("box."..self.type.id..".destroy") or ""
     pyramid:log(self, tr(customLog) == customLog and tr("log.destroy"):gsub("#", self:name()) or tr(customLog))
     self.destroyed = true
+    self.opened = false
     pyramid:countStats()
     local offset = destroySound:getOffset()
     if offset > 0.05 or offset == 0 then
@@ -174,7 +179,7 @@ function Box:destroy()
     pyramid.fx:addEffect(DestroyEffect(self.sprite.x, self.sprite.y))
     if self.opened and self.type.onDestroy then self.type.onDestroy(self) end
     if pyramid.cursor:box() == self then infobox:refresh() end
-    self.scale = 0
+    self:prepDrawTransition()
     self:redraw()
     for _, box in pairs(pyramid:getBoxes()) do
         if box ~= self then box:otherBoxDestroyed(self) end
@@ -237,7 +242,6 @@ function Box:revive()
     pyramid:log(self, tr("log.revive"):gsub("#", self:name()))
     self:prepDrawTransition()
     self:redraw()
-    pyramid:countStats()
 end
 
 function Box:useFX()
@@ -303,19 +307,16 @@ function Box:n2()
 end
 
 function Box:name()
-    if self.destroyed then return tr("box.destroyed.n") end
     if not self.revealed then return tr("box..n") end
     return tr("box."..self.type.id..".n")
 end
 
 function Box:desc()
-    if self.destroyed then return tr("box.destroyed.d") end
     if not self.revealed then return tr("box..d") end
     return tr("box."..self.type.id..".d"):gsub("##", self:n2()):gsub("#", self:n())
 end
 
 function Box:displayIcon()
-    if self.destroyed then return emptyIcon end
     if not self.revealed then return unknownImg end
     return self.type.icon
 end

@@ -38,13 +38,13 @@ function Cursor:moveHoriz(dir)
     local row = pyramid:nonDestroyedInRow(self.row)
     if #row == 0 then return
     elseif #row == 1 then
-        if self:box().destroyed then
+        if self:box().OLDdestroyed then
             self.col = row[1].col
             self:onMove()
         end
         return
     else
-        if (self:box().destroyed and ((dir == 1 and row[#row].col < self:box().col) or (dir == -1 and row[1].col > self:box().col))) or row[dir == 1 and #row or 1] == self:box() then
+        if (self:box().OLDdestroyed and ((dir == 1 and row[#row].col < self:box().col) or (dir == -1 and row[1].col > self:box().col))) or row[dir == 1 and #row or 1] == self:box() then
             self.col = row[(dir == 1) and 1 or #row].col
             self:onMove()
         else

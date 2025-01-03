@@ -139,8 +139,8 @@ function Pyramid:setup()
         newTypes2[i] = boxesById[t]
     end
     --]]
-    newTypes2[1] = boxesById.invert
-    newTypes2[2] = boxesById.lose
+    newTypes2[1] = boxesById.demo
+    newTypes2[2] = boxesById.aid
     for i, box in ipairs(self.boxes) do
         box:reset(newTypes2[i + skipped])
     end
@@ -231,7 +231,7 @@ end
 function Pyramid:nonDestroyedInRow(rowNum)
     local row = {}
     for i, box in ipairs(self.rows[rowNum]) do
-        if not box.destroyed then table.insert(row, box) end
+        if not box.OLDdestroyed then table.insert(row, box) end
     end
     return row
 end

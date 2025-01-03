@@ -78,7 +78,7 @@ boxes = {
 }, {
     id = "safeguard",
     onOtherBoxPressed = function(self, box)
-        if not box.revealed then
+        if not box.destroyed and not box.revealed then
             self:destroy()
             box:reveal()
             return true
@@ -120,9 +120,12 @@ boxes = {
 }, {
     id = "demo",
     onOtherBoxPressed = function(self, box)
-        self:destroy()
-        box:destroy()
-        return true
+        if not box.destroyed then
+            self:destroy()
+            box:destroy()
+            return true
+        end
+        return false
     end
 }, {
     id = "safe",
@@ -177,7 +180,7 @@ boxes = {
 }, {
     id = "tape",
     onOtherBoxPressed = function(self, box)
-        if box ~= self and box.opened then
+        if box ~= self and box.opened and not box.destroyed then
             self:destroy()
             box:close()
             return true
@@ -405,7 +408,6 @@ boxes = {
         shuffle(boxes)
         for i = 1, self:n() do if boxes[i] then
             boxes[i]:revive()
-            boxes[i]:close()
         end end
     end
 }, {
@@ -720,7 +722,6 @@ boxes = {
     onOtherBoxDestroyed = function(self, box)
         if math.random() * 100 < self:n() then
             box:revive()
-            box:close()
         end
     end,
     onDestroy = function(self)
@@ -962,6 +963,16 @@ boxes = {
             self:log()
             pyramid:lose()
         end
+    end
+}, {
+    id = "aid",
+    onOtherBoxPressed = function(self, box)
+        if box ~= self and box.destroyed then
+            self:destroy()
+            box:revive()
+            return true
+        end
+        return false
     end
 }
 
