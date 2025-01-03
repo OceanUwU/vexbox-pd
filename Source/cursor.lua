@@ -60,6 +60,7 @@ function Cursor:moveHoriz(dir)
 end
 
 function Cursor:moveVert(dir)
+    if pyramid.inverted then dir *= -1 end
     local checkRow = self.row
     repeat
         checkRow += dir

@@ -138,6 +138,11 @@ boxes = {
     end
 }, {
     id = "invert",
+    onOpen = function(self) pyramid:repositionBoxes() end,
+    onTransformInto = function(self) pyramid:repositionBoxes() end,
+    onDestroy = function(self) pyramid:repositionBoxes() end,
+    onClose = function(self) pyramid:repositionBoxes() end,
+    onTransform = function(self) pyramid:repositionBoxes() end
 },
 
 { -- ROW 7

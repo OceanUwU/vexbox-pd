@@ -9,6 +9,7 @@ function WinLossBox:init()
     self.sprite:setSize(100, 30)
     self.sprite:setCenter(0, 1)
     self.sprite:add()
+    self.sprite:setVisible(false)
     self.restartSprite = gfx.sprite.new(loadImg("restart"))
     self.restartSprite:moveTo(restartPos, restartPos)
     self.restartSprite:add()
@@ -22,11 +23,14 @@ function WinLossBox:init()
     self.startShowProgress = 0
     self.showProgress = 0
     self.showTime = showTime
+    self.tY = nil
 end
 
 function WinLossBox:show(won)
+    self.sprite:setVisible(true)
     self.shown = true
     self.showing = true
+    self.inverted = pyramid.inverted
     self.startShowProgress = self.showProgress
     self.showTime = 0
 
@@ -34,9 +38,17 @@ function WinLossBox:show(won)
     gfx.pushContext(img)
 
     gfx.setColor(gfx.kColorWhite)
-    gfx.fillRoundRect(-20, -20, self.sprite.width + 20, self.sprite.height + 20, 5)
+    if self.inverted then
+        gfx.fillRoundRect(-20, 0, self.sprite.width + 20, self.sprite.height + 20, 5)
+    else
+        gfx.fillRoundRect(-20, -20, self.sprite.width + 20, self.sprite.height + 20, 5)
+    end
     gfx.setColor(gfx.kColorBlack)
-    gfx.drawRoundRect(-20, -20, self.sprite.width + 20, self.sprite.height + 20, 5)
+    if self.inverted then
+        gfx.drawRoundRect(-20, 0, self.sprite.width + 20, self.sprite.height + 20, 5)
+    else
+        gfx.drawRoundRect(-20, -20, self.sprite.width + 20, self.sprite.height + 20, 5)
+    end
     fontLg:drawText(tr(won and "wl.win" or "wl.lose"), 5, 3)
     fontSm:drawText(tr("wl.restart"), 5, 18)
 
@@ -53,8 +65,21 @@ function WinLossBox:update()
             self.showProgress = self.startShowProgress - (1 - math.pow(1 - self.showTime / showTime, 2)) * self.startShowProgress
         end
         local y = self.showProgress * self.sprite.height
+        if self.inverted then y = 240 + self.sprite.height - y end
         self.sprite:moveTo(0, y)
-        self.restartSprite:moveTo(restartPos, y + restartPos)
+        self.restartSprite:moveTo(restartPos, y + (self.inverted and (-restartPos - self.sprite.height) or restartPos))
+        self.restartButtonSprite:moveTo(self.restartSprite.x, self.restartSprite.y)
+        if self.showTime >= showTime then
+            self.shown = self.showing
+            self.sprite:setVisible(self.shown)
+        end
+    elseif self.tY ~= nil then
+        if math.abs(self.restartSprite.y - self.tY) <= 1 then
+            self.restartSprite:moveTo(self.restartSprite.x, self.tY)
+            self.tY = nil
+        else
+            self.restartSprite:moveTo(self.restartSprite.x, pd.math.lerp(self.restartSprite.y, self.tY, 1.0 - math.pow(0.00001, delta)))
+        end
         self.restartButtonSprite:moveTo(self.restartSprite.x, self.restartSprite.y)
     end
     if self.restarting then
@@ -74,6 +99,14 @@ function WinLossBox:update()
             self.restarting = false
             self.unrestarting = false
         end
+    end
+end
+
+function WinLossBox:move()
+    if pyramid.inverted then
+        self.tY = 240 - restartPos
+    else
+        self.tY = restartPos
     end
 end
 

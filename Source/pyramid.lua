@@ -18,15 +18,16 @@ function Pyramid:init()
     self.winsNeeded = -1
     self.totalWins = 0
     self.streak = 0
+    self.inverted = false
     local gameData = pd.datastore.read()
-    local inverted = false
+    local displayInverted = false
     if gameData then
         self.totalWins = gameData.w
         self.streak = gameData.s
-        inverted = gameData.i
+        displayInverted = gameData.i
     end
-    pd.display.setInverted(inverted)
-    pd.getSystemMenu():addCheckmarkMenuItem(tr("menuitem.invert"), inverted, function(nowInverted)
+    pd.display.setInverted(displayInverted)
+    pd.getSystemMenu():addCheckmarkMenuItem(tr("menuitem.invert"), displayInverted, function(nowInverted)
         pd.display.setInverted(nowInverted)
         self:save()
     end)
@@ -138,6 +139,8 @@ function Pyramid:setup()
         newTypes2[i] = boxesById[t]
     end
     --]]
+    newTypes2[1] = boxesById.invert
+    newTypes2[2] = boxesById.lose
     for i, box in ipairs(self.boxes) do
         box:reset(newTypes2[i + skipped])
     end
@@ -163,11 +166,23 @@ function Pyramid:countStats()
 end
 
 function Pyramid:repositionBoxes()
+    local wasInverted = self.inverted
+    self.inverted = false
+    for _, box in ipairs(self.boxes) do
+        if box.row > self.numRows then break end
+        if box.type.id == "invert" and box.opened and not box.destroyed then
+            self.inverted = not self.inverted
+        end
+    end
+    if self.inverted ~= wasInverted then
+        self.winLossBox:move()
+    end
     local padding<const> = (self.size - consts.boxSize * self.numRows) / 2 + consts.boxSize / 2
     for _, box in ipairs(self.boxes) do
         if box.row > self.numRows then break end
         box.sprite:moveTo(self.x + consts.boxSize / 2 + (box.col - 1 + (consts.maxRows - box.row) / 2) * consts.boxSize, box.sprite.y)
-        box.tY = self.y + padding + (box.row - 1) * consts.boxSize
+        local row = self.inverted and (self.numRows - box.row) or (box.row - 1)
+        box.tY = self.y + padding + row * consts.boxSize
         box.sprite.tScale = box.row <= self.numRows and 1 or 0
         local shouldShow = box.row <= self.numRows
         local shows = box.sprite:isVisible()
